@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.fbw.service.mapper.ShopsSpuriousNumberMapper">
+  <resultMap id="BaseResultMap" type="com.fbw.service.entity.shop.ShopSpuriousNumberEntity">
+    <id column="id" jdbcType="INTEGER" property="Id" />
+    <result column="shop_id" jdbcType="INTEGER" property="shopId" />
+    <result column="spurious_collect_num" jdbcType="INTEGER" property="spuriousCollectNum" />
+    <result column="spurious_browse_num" jdbcType="INTEGER" property="spuriousBrowseNum" />
+    <result column="created_at" jdbcType="TIMESTAMP" property="createdAt" />
+    <result column="updated_at" jdbcType="TIMESTAMP" property="updatedAt" />
+  </resultMap>
+ 
+	<select id="getShopsSpuriousCollectNum" parameterType = "java.lang.Integer" resultType = "java.lang.Integer">
+		select spurious_collect_num from t_shop_spurious_number
+		where shop_id = #{shopId}
+	</select>
+</mapper>

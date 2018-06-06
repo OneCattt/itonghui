@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.fbw.service.mappers.UserCommentBusinEntityMapper">
+  <resultMap id="BaseResultMap" type="com.fbw.service.entity.user.UserCommentBusinEntity">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="user_id" jdbcType="INTEGER" property="userId" />
+    <result column="nick_name" jdbcType="VARCHAR" property="nickName" />
+    <result column="user_avatar" jdbcType="VARCHAR" property="userAvatar" />
+    <result column="order_number" jdbcType="VARCHAR" property="orderNumber" />
+    <result column="shop_id" jdbcType="INTEGER" property="shopId" />
+    <result column="score" jdbcType="DECIMAL" property="score" />
+    <result column="content" jdbcType="VARCHAR" property="content" />
+    <result column="picture" jdbcType="VARCHAR" property="picture" />
+    <result column="comment_label" jdbcType="VARCHAR" property="commentLabel" />
+    <result column="reply_content" jdbcType="VARCHAR" property="replyContent" />
+    <result column="reply_time" jdbcType="TIMESTAMP" property="replyTime" />
+    <result column="reply_status" jdbcType="INTEGER" property="replyStatus" />
+    <result column="report_status" jdbcType="INTEGER" property="reportStatus" />
+    <result column="report_content" jdbcType="VARCHAR" property="reportContent" />
+    <result column="report_time" jdbcType="TIMESTAMP" property="reportTime" />
+    <result column="is_del" jdbcType="INTEGER" property="isDel" />
+    <result column="admin_id" jdbcType="INTEGER" property="adminId" />
+    <result column="created_at" jdbcType="TIMESTAMP" property="createdAt" />
+    <result column="updated_at" jdbcType="TIMESTAMP" property="updatedAt" />
+    <result column="avg_comm_score" jdbcType="DECIMAL" property="avgCommScore" />
+    <result column="comment_num" jdbcType="INTEGER" property="commentNum" />
+     <result column="sum_comm_score" jdbcType="DECIMAL" property="sumCommScore" />
+  </resultMap>
+   <resultMap id="CommentBannerMap" type="com.fbw.service.entity.user.UserCommentBannerConfEntity">
+    <id column="id" jdbcType="INTEGER" property="bannerId" />
+    <result column="banner_name" jdbcType="VARCHAR" property="bannerName" />
+    <result column="score" jdbcType="DECIMAL" property="score" />
+    <result column="min_score" jdbcType="DECIMAL" property="minScore" />
+    <result column="is_pic" jdbcType="INTEGER" property="isPic" />
+    <result column="created_at" jdbcType="TIMESTAMP" property="createdAt" />
+    <result column="updated_at" jdbcType="TIMESTAMP" property="updatedAt" />
+  </resultMap>
+  <select id="getOneUserCommentInfo" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select 
+    content,picture,comment_label 
+    from t_user_comment_busin 
+    where order_number=#{param2}
+    AND is_del=0
+  </select>
+  <select id="getOneRecentShopComment" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    content,nick_name from t_user_comment_busin 
+    where shop_id=#{param1}
+    AND is_del=0 
+    order by score DESC,created_at DESC limit 1
+  </select>
+  <select id="getOneRecentShopCommentMore" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    user_avatar,content,nick_name,created_at,score,picture 
+    from t_user_comment_busin 
+    where shop_id=#{param1} 
+    AND is_del=0
+    order by score DESC,created_at DESC limit 1
+  </select>
+   <select id="getOneShopCommentNum" parameterType="java.lang.Integer" resultType="java.lang.Integer">
+    select count(id) from t_user_comment_busin where shop_id=#{param1} AND is_del=0
+  </select>
+   <select id="getOneShopAllComment" parameterType="java.util.HashMap" resultMap="BaseResultMap">
+    select 
+    user_avatar,content,nick_name,created_at,score,picture,comment_label,reply_content,replyStatus
+    from t_user_comment_busin 
+    where 
+    is_del=0
+    AND shop_id=#{shopId} ${sql}
+     order by 
+     created_at DESC limit #{begin},20
+  </select>
+   <select id="getOneShopAllPicNum" parameterType="java.lang.Integer" resultType="java.lang.Integer">
+    select count(id) from t_user_comment_busin where shop_id=#{param1} AND is_del=0 and picture<![CDATA[ <>]]> '' and picture is not null
+  </select>
+  <select id="getOneShopAllPicComment" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    user_avatar,content,nick_name,created_at,score,picture,comment_label,reply_content,replyStatus
+    from t_user_comment_busin 
+    where 
+    shop_id=#{param1}
+    AND is_del=0 and picture<![CDATA[ <>]]> '' and picture is not null
+     order by 
+     created_at DESC limit #{param2},20
+  </select>
+  <insert id="insertUserComment" parameterType="com.fbw.service.entity.user.UserCommentBusinEntity">
+  insert into 
+  t_user_comment_busin
+  <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="userId != null">
+        user_id,
+      </if>
+      <if test="userAvatar != null">
+        user_avatar,
+      </if>
+      <if test="orderNumber != null">
+        order_number,
+      </if>
+      <if test="shopId != null">
+        shop_id,
+      </if>
+      <if test="content != null">
+        content,
+      </if>
+      <if test="nickName != null">
+        nick_name,
+      </if>
+      <if test="score != null">
+        score,
+      </if>
+      <if test="picture != null">
+        picture,
+      </if>
+      <if test="commentLabel != null">
+        comment_label,
+      </if>
+  </trim> 
+   <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="userId != null">
+        #{userId,jdbcType=VARCHAR},
+      </if>
+      <if test="userAvatar != null">
+        #{userAvatar,jdbcType=VARCHAR},
+      </if>
+      <if test="orderNumber != null">
+        #{orderNumber,jdbcType=VARCHAR},
+      </if>
+      <if test="shopId != null">
+        #{shopId,jdbcType=VARCHAR},
+      </if>
+      <if test="content != null">
+        #{content,jdbcType=VARCHAR},
+      </if>
+      <if test="nickName != null">
+        #{nickName,jdbcType=VARCHAR},
+      </if>
+       <if test="score != null">
+        #{score,jdbcType=VARCHAR},
+      </if>
+      <if test="picture != null">
+        #{picture,jdbcType=VARCHAR},
+      </if>
+      <if test="commentLabel != null">
+        #{commentLabel,jdbcType=VARCHAR},
+      </if>
+   </trim>   
+  </insert>
+  <select id="getOneShopAvgScore" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select AVG(score) AS avg_comm_score,count(id) as comment_num,SUM(score) as sum_comm_score from t_user_comment_busin where shop_id=#{param1} AND is_del=0
+  </select>
+  <select id="getCommentBanner" resultMap="CommentBannerMap">
+   select id,banner_name,score,min_score,is_pic from t_user_comment_banner_conf where status=1 order by rank ASC
+  </select>
+   <select id="getCommentBannerById" resultMap="CommentBannerMap">
+   select score,min_score,is_pic from t_user_comment_banner_conf where status=1 and id = #{id}
+  </select>
+  <select id="getCommentBannerNumber" resultType="java.lang.Integer">
+   select count(id) from t_user_comment_busin where is_del=0 AND shop_id=#{shopId} ${sql}
+  </select>
+</mapper>

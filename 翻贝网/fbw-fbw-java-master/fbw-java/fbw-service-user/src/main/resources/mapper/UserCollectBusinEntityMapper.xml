@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.fbw.service.mappers.UserCollectBusinEntityMapper">
+  <resultMap id="BaseResultMap" type="com.fbw.service.entity.user.UserCollectBusinEntity">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="user_id" jdbcType="INTEGER" property="userId" />
+    <result column="shop_id" jdbcType="INTEGER" property="shopId" />
+    <result column="status" jdbcType="INTEGER" property="status" />
+    <result column="interview_shop_id" jdbcType="INTEGER" property="interviewShopId" />
+    <result column="collect_type" jdbcType="INTEGER" property="collectType" />
+    <result column="collect_number" jdbcType="INTEGER" property="collectNumber" />
+    <result column="info" jdbcType="VARCHAR" property="info" />
+    <result column="created_at" jdbcType="TIMESTAMP" property="createdAt" />
+    <result column="updated_at" jdbcType="TIMESTAMP" property="updatedAt" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="business_area_name" jdbcType="VARCHAR" property="businessAreaName" />
+    <result column="second_class_name" jdbcType="VARCHAR" property="secondClassName" />
+    <result column="list_photo" jdbcType="VARCHAR" property="listPhoto" />
+  </resultMap>
+ <insert id="insertUserCollect" parameterType="java.lang.Integer" >
+    insert into
+     t_user_collect_busin(user_id,shop_id,collect_type) 
+     values (#{param1},#{param2},1)
+  </insert>
+   <insert id="insertUserCollectInterviewShop" parameterType="java.lang.Integer">
+    insert into
+     t_user_collect_busin(user_id,interview_shop_id,collect_type) 
+     values (#{param1},#{param2},2)
+  </insert>
+  <select id="getUserCollectList" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+	SELECT
+	  s.shop_id,
+	  t.name,
+	  t.business_area_name,
+	  t.second_class_name,
+	  t.list_photo
+	FROM
+		t_user_collect_busin s,
+		t_shop_info_busin t
+	WHERE
+	  s.shop_id = t.id
+	AND
+		s.user_id = #{param1}
+	AND s. STATUS = 1
+	AND s.collect_type = 1
+	ORDER BY
+		s.created_at DESC
+	LIMIT #{param2},
+	 20
+  </select>
+   <select id="getUserCollectInterviewShopList" parameterType="java.lang.Integer" resultType="java.lang.String">
+   select 
+   interview_shop_id 
+   from t_user_collect_busin 
+   where user_id=#{param1} and status=1 and collect_type=2
+   order by created_at desc
+   limit #{param2},20
+  </select>
+  <update id="updateUserCollect" parameterType="java.lang.Integer">
+   update 
+   t_user_collect_busin
+    set status=#{param3}
+    where user_id=#{param1} and shop_id=#{param2}
+  </update>
+   <update id="updateUserCollectInterviewShop" parameterType="java.lang.Integer">
+   update 
+   t_user_collect_busin
+    set status=#{param3}
+    where user_id=#{param1} and interview_shop_id=#{param2}
+  </update>
+  <select id="getUserIsCollect" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+   select 
+   id,status
+   from t_user_collect_busin 
+   where user_id=#{param1} and shop_id=#{param2} and collect_type=1
+  </select>
+  <select id="getUserIsCollectInterviewShop" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+   select 
+   id,status
+   from t_user_collect_busin 
+   where user_id=#{param1} and interview_shop_id=#{param2} and collect_type=2
+  </select>
+  <select id="getCollectNumByShopId"  parameterType="java.lang.Integer" resultType="java.lang.Integer">
+   select count(id) from t_user_collect_busin where shop_id=#{param1}
+  </select>
+  <select id="getCollectInterviewNumByShopId"  parameterType="java.lang.Integer" resultType="java.lang.Integer">
+   select count(id) from t_user_collect_busin where interview_shop_id=#{param1}
+  </select>
+  <select id="getAllShopCollectNumber"  resultMap="BaseResultMap">
+	SELECT
+		shop_id,
+		COUNT(id) as collect_number
+	FROM
+		t_user_collect_busin
+	WHERE
+		collect_type = 1
+	GROUP BY
+		shop_id
+  </select>
+</mapper>

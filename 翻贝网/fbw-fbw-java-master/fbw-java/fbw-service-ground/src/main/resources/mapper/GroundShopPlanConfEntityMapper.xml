@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.fbw.service.mapper.GroundShopPlanConfEntityMapper">
+  <resultMap id="BaseResultMap" type="com.fbw.service.entity.ground.GroundShopPlanConfEntity">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="ground_style" jdbcType="VARCHAR" property="groundStyle" />
+    <result column="every_dowapp_amount" jdbcType="DECIMAL" property="everyDowappAmount" />
+    <result column="limit_how_many_user" jdbcType="INTEGER" property="limitHowManyUser" />
+    <result column="before_every_user_amount" jdbcType="DECIMAL" property="beforeEveryUserAmount" />
+    <result column="after_every_user_amount" jdbcType="DECIMAL" property="afterEveryUserAmount" />
+    <result column="is_limit_how_many_user" jdbcType="VARCHAR" property="isLimitHowManyUser" />
+    <result column="order_actual_pay_percent" jdbcType="DECIMAL" property="orderActualPayPercent" />
+    <result column="ground_time_limit" jdbcType="INTEGER" property="groundTimeLimit" />
+    <result column="effect_date" jdbcType="DATE" property="effectDate" />
+    <result column="invalid_date" jdbcType="DATE" property="invalidDate" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, ground_style, every_dowapp_amount, limit_how_many_user, before_every_user_amount, 
+    after_every_user_amount, is_limit_how_many_user, order_actual_pay_percent, ground_time_limit, 
+    effect_date, invalid_date
+  </sql>
+  <select id="selectById" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+	  select
+	  <include refid="Base_Column_List" />
+	  from
+	  t_ground_shop_plan_conf
+	  where id=#{id}
+  </select>
+  
+  
+ 
+</mapper>

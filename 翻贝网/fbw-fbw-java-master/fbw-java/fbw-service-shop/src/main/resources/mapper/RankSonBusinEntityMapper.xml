@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.fbw.service.mapper.RankSonBusinEntityMapper">
+  <resultMap id="BaseResultMap" type="com.fbw.service.entity.shop.RankSonBusinEntity">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="shop_id" jdbcType="INTEGER" property="shopId" />
+    <result column="real_hot" jdbcType="INTEGER" property="realHot" />
+    <result column="changed_hot" jdbcType="INTEGER" property="changedHot" />
+    <result column="belonged_rank_id" jdbcType="INTEGER" property="belongedRankId" />
+    <result column="created_at" jdbcType="TIMESTAMP" property="createdAt" />
+    <result column="updated_at" jdbcType="TIMESTAMP" property="updatedAt" />
+    <result column="rank_name" jdbcType="VARCHAR" property="rankName" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="address" jdbcType="VARCHAR" property="address" />
+    <result column="business_area_name" jdbcType="VARCHAR" property="businessAreaName" />
+    <result column="second_class_name" jdbcType="VARCHAR" property="secondClassName" />
+     <result column="rank_id" jdbcType="INTEGER" property="rankId" />
+     <result column="rank_number" jdbcType="INTEGER" property="rankNumber" />
+     <result column="list_photo" jdbcType="VARCHAR" property="listPhoto" />
+     
+  </resultMap>
+  <select id="getShopByRankid" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+	SELECT
+		shop_id ,
+		f. NAME AS NAME ,
+		f.address ,
+		f.business_area_name,
+		f.second_class_name,
+		f.list_photo
+	FROM
+		t_rank_son_busin t ,
+		t_shop_info_busin f
+	WHERE
+		t.shop_id = f.id 
+	and t.belonged_rank_id = #{param1}
+	ORDER BY
+		t.changed_hot DESC
+  </select>
+   <select id="getRankingByshopId" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+     SELECT
+		rank_id,
+		belonged_rank_id,
+		rank_number,
+		rank_name
+	 FROM
+		(
+			SELECT
+			   ff.shop_id,
+			   ff.rank_id,
+			   ff.belonged_rank_id,
+			   ff.rank_name,
+			IF (
+				@pa = ff.belonged_rank_id ,@rank :=@rank + 1 ,@rank := 1
+			) AS rank_number ,@pa := ff.belonged_rank_id
+			FROM
+				(
+					SELECT
+						s.id AS rank_id,
+						s.shop_id,
+						t.rank_name,
+						s.belonged_rank_id,
+						s.changed_hot
+					FROM
+						t_rank_son_busin s,
+						t_rank_father_busin t
+					WHERE
+						t.ID = s.belonged_rank_id
+					ORDER BY
+						belonged_rank_id ASC,
+						changed_hot DESC
+				) ff,
+				(SELECT @pa:=0,@rank:=0)tt
+		) result
+	WHERE
+		result.shop_id = #{param1}
+	ORDER BY
+		result.rank_number ASC
+	LIMIT 1
+  </select>
+  
+</mapper>

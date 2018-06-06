@@ -1,0 +1,212 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.fbw.service.mapper.GroundShopInfoBusinEntityMapper">
+  <resultMap id="BaseResultMap" type="com.fbw.service.entity.ground.GroundShopInfoBusinEntity">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="city_id" jdbcType="VARCHAR" property="cityId" />
+    <result column="shop_id" jdbcType="VARCHAR" property="shopId" />
+    <result column="shop_code" jdbcType="VARCHAR" property="shopCode" />
+    <result column="shop_ground_type" jdbcType="VARCHAR" property="shopGroundType" />
+    <result column="register_shop_account" jdbcType="VARCHAR" property="registerShopAccount" />
+    <result column="shop_address" jdbcType="VARCHAR" property="shopAddress" />
+    <result column="shop_name" jdbcType="VARCHAR" property="shopName" />
+    <result column="shop_salesman_id" jdbcType="VARCHAR" property="shopSalesmanId" />
+    <result column="shop_salesman_name" jdbcType="VARCHAR" property="shopSalesmanName" />
+    <result column="shop_qr_code" jdbcType="VARCHAR" property="shopQrCode" />
+    <result column="register_amount" jdbcType="INTEGER" property="registerAmount" />
+    <result column="valid_register_amount" jdbcType="INTEGER" property="validRegisterAmount" />
+    <result column="ground_register_fee" jdbcType="DECIMAL" property="groundRegisterFee" />
+    <result column="ground_other_fee" jdbcType="DECIMAL" property="groundOtherFee" />
+    <result column="vaild_order_amount" jdbcType="INTEGER" property="vaildOrderAmount" />
+    <result column="ground_withdrawals_fee" jdbcType="DECIMAL" property="groundWithdrawalsFee" />
+    <result column="account_balance" jdbcType="DECIMAL" property="accountBalance" />
+    <result column="status" jdbcType="VARCHAR" property="status" />
+    <result column="created_date" jdbcType="TIMESTAMP" property="createdDate" />
+    <result column="contract_start_date" jdbcType="TIMESTAMP" property="contractStartDate" />
+    <result column="contract_end_date" jdbcType="TIMESTAMP" property="contractEndDate" />
+  </resultMap>
+  
+  <sql id="Base_Column_List">
+    id, city_id, shop_id, shop_code, shop_ground_type, register_shop_account, shop_address, shop_name, 
+    shop_salesman_id, shop_salesman_name, shop_qr_code, register_amount, valid_register_amount, 
+    ground_register_fee, ground_other_fee, vaild_order_amount, ground_withdrawals_fee, 
+    account_balance, status, created_date, contract_start_date, contract_end_date
+  </sql>
+  
+  <insert id="saveGroundShopInfo" parameterType="com.fbw.service.entity.ground.GroundShopInfoBusinEntity">
+    <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Integer">
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into t_ground_shop_info_busin
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="cityId != null">
+        city_id,
+      </if>
+      <if test="shopId != null">
+        shop_id,
+      </if>
+      <if test="shopCode != null">
+        shop_code,
+      </if>
+      <if test="shopGroundType != null">
+        shop_ground_type,
+      </if>
+      <if test="registerShopAccount != null">
+        register_shop_account,
+      </if>
+      <if test="shopAddress != null">
+        shop_address,
+      </if>
+      <if test="shopName != null">
+        shop_name,
+      </if>
+      <if test="shopSalesmanId != null">
+        shop_salesman_id,
+      </if>
+      <if test="shopSalesmanName != null">
+        shop_salesman_name,
+      </if>
+      <if test="shopQrCode != null">
+        shop_qr_code,
+      </if>
+      <if test="registerAmount != null">
+        register_amount,
+      </if>
+      <if test="validRegisterAmount != null">
+        valid_register_amount,
+      </if>
+      <if test="groundRegisterFee != null">
+        ground_register_fee,
+      </if>
+      <if test="groundOtherFee != null">
+        ground_other_fee,
+      </if>
+      <if test="vaildOrderAmount != null">
+        vaild_order_amount,
+      </if>
+      <if test="groundWithdrawalsFee != null">
+        ground_withdrawals_fee,
+      </if>
+      <if test="accountBalance != null">
+        account_balance,
+      </if>
+      <if test="status != null">
+        status,
+      </if>
+        created_date,
+        contract_start_date,
+        contract_end_date
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="cityId != null">
+        #{cityId,jdbcType=VARCHAR},
+      </if>
+      <if test="shopId != null">
+        #{shopId,jdbcType=VARCHAR},
+      </if>
+      <if test="shopCode != null">
+        #{shopCode,jdbcType=VARCHAR},
+      </if>
+      <if test="shopGroundType != null">
+        #{shopGroundType,jdbcType=VARCHAR},
+      </if>
+      <if test="registerShopAccount != null">
+        #{registerShopAccount,jdbcType=VARCHAR},
+      </if>
+      <if test="shopAddress != null">
+        #{shopAddress,jdbcType=VARCHAR},
+      </if>
+      <if test="shopName != null">
+        #{shopName,jdbcType=VARCHAR},
+      </if>
+      <if test="shopSalesmanId != null">
+        #{shopSalesmanId,jdbcType=VARCHAR},
+      </if>
+      <if test="shopSalesmanName != null">
+        #{shopSalesmanName,jdbcType=VARCHAR},
+      </if>
+      <if test="shopQrCode != null">
+        #{shopQrCode,jdbcType=VARCHAR},
+      </if>
+      <if test="registerAmount != null">
+        #{registerAmount,jdbcType=INTEGER},
+      </if>
+      <if test="validRegisterAmount != null">
+        #{validRegisterAmount,jdbcType=INTEGER},
+      </if>
+      <if test="groundRegisterFee != null">
+        #{groundRegisterFee,jdbcType=DECIMAL},
+      </if>
+      <if test="groundOtherFee != null">
+        #{groundOtherFee,jdbcType=DECIMAL},
+      </if>
+      <if test="vaildOrderAmount != null">
+        #{vaildOrderAmount,jdbcType=INTEGER},
+      </if>
+      <if test="groundWithdrawalsFee != null">
+        #{groundWithdrawalsFee,jdbcType=DECIMAL},
+      </if>
+      <if test="accountBalance != null">
+        #{accountBalance,jdbcType=DECIMAL},
+      </if>
+      <if test="status != null">
+        #{status,jdbcType=VARCHAR},
+      </if>
+      now(),now(),DATE_ADD(now(), INTERVAL 1 YEAR)
+    </trim>
+  </insert>
+  <select id="queryShopGroundByShopId" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+  select 
+  <include refid="Base_Column_List" />
+  from t_ground_shop_info_busin
+  where shop_id=#{shopId}
+  </select>
+  <update id="updateShopGroundRegInfo" parameterType="com.fbw.service.entity.ground.GroundShopInfoBusinEntity">
+	  update 
+	  t_ground_shop_info_busin
+	  <set>
+	  <if test="registerAmount != null">
+	        register_amount = #{registerAmount,jdbcType=INTEGER},
+	      </if>
+	      <if test="validRegisterAmount != null">
+	        valid_register_amount = #{validRegisterAmount,jdbcType=INTEGER},
+	      </if>
+	      <if test="groundRegisterFee != null">
+	        ground_register_fee = #{groundRegisterFee,jdbcType=DECIMAL},
+	      </if>
+	      <if test="groundOtherFee != null">
+	        ground_other_fee = #{groundOtherFee,jdbcType=DECIMAL},
+	      </if>
+	      <if test="vaildOrderAmount != null">
+	        vaild_order_amount = #{vaildOrderAmount,jdbcType=INTEGER},
+	      </if>
+	      <if test="accountBalance != null">
+	        account_balance = #{accountBalance,jdbcType=DECIMAL},
+	      </if>
+	  </set>
+	  where shop_id=#{shopId}
+  </update>
+  <select id="selectIsExistShopCode" parameterType="java.lang.String" resultType="java.lang.Integer">
+    select count(id) from t_ground_shop_info_busin where shop_code=#{shopCode}
+  </select>
+  <select id="selectByCityId" parameterType="java.lang.String"  resultMap="BaseResultMap">
+   select  
+   <include refid="Base_Column_List" /> 
+   from t_ground_shop_info_busin where city_id=#{param1}
+   <if test="param2 != null">
+	 and register_shop_account like concat('%',#{param2},'%')
+   </if>
+  </select>
+  <update id="updateGroundShopStatus"  parameterType="java.lang.Integer">
+    update t_ground_shop_info_busin 
+    set
+    <if test="param2 == 1">
+    status='0'
+    </if>
+    <if test="param2 == 0">
+    status='1'
+    </if>
+    where shop_id=#{param1}  
+  </update>
+  
+</mapper>

@@ -1,0 +1,28 @@
+spring:
+  application:
+    name: fbw-service-config
+  cloud:
+    config:
+      server:
+        git:
+          uri: https://git.oschina.net/fyztk/fbw-service
+          username: fbw
+          password: FBWHUANG123
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://fbw:fbwtest123@172.16.40.20:8761/eureka/
+  instance:
+    prefer-ip-address: true
+security:
+  basic:
+    enabled: true
+  user:
+    name: fbw
+    password: fbwtest123
+encrypt:
+  keyStore:
+    location: classpath:/server.jks
+    password: fbwtest123
+    alias: fbwtestkey
+    secret: fanbeiwang

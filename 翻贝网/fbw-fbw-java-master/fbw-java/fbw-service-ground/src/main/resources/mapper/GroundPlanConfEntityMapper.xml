@@ -1,0 +1,238 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.fbw.service.mapper.GroundPlanConfEntityMapper">
+  <resultMap id="BaseResultMap" type="com.fbw.service.entity.ground.GroundPlanConfEntity">
+    <id column="ground_id" jdbcType="INTEGER" property="groundId" />
+    <result column="ground_name" jdbcType="VARCHAR" property="groundName" />
+    <result column="city_id" jdbcType="VARCHAR" property="cityId" />
+    <result column="groud_scheme_type" jdbcType="VARCHAR" property="groudSchemeType" />
+    <result column="ground_type" jdbcType="VARCHAR" property="groundType" />
+    <result column="balance_cycle_type" jdbcType="VARCHAR" property="balanceCycleType" />
+    <result column="balance_describe" jdbcType="VARCHAR" property="balanceDescribe" />
+    <result column="validate_ground_define" jdbcType="VARCHAR" property="validateGroundDefine" />
+    <result column="ground_balance_describe" jdbcType="VARCHAR" property="groundBalanceDescribe" />
+    <result column="valid_register_fee" jdbcType="DECIMAL" property="validRegisterFee" />
+    <result column="consume_activity_fee_limit" jdbcType="DECIMAL" property="consumeActivityFeeLimit" />
+    <result column="each_order_piece_fee" jdbcType="DECIMAL" property="eachOrderPieceFee" />
+    <result column="each_activity_fee_piece_percent" jdbcType="DECIMAL" property="eachActivityFeePiecePercent" />
+    <result column="each_first_recharge_fee_limit" jdbcType="DECIMAL" property="eachFirstRechargeFeeLimit" />
+    <result column="each_recharge_pirce_fee" jdbcType="DECIMAL" property="eachRechargePirceFee" />
+    <result column="each_recharge_fee_limit" jdbcType="DECIMAL" property="eachRechargeFeeLimit" />
+    <result column="user_recharge_amount_before" jdbcType="VARCHAR" property="userRechargeAmountBefore" />
+    <result column="register_amount_before" jdbcType="DECIMAL" property="registerAmountBefore" />
+    <result column="register_amount_after" jdbcType="DECIMAL" property="registerAmountAfter" />
+    <result column="register_fee_before" jdbcType="DECIMAL" property="registerFeeBefore" />
+    <result column="register_fee_after" jdbcType="DECIMAL" property="registerFeeAfter" />
+    <result column="each_order_piece_percent_after" jdbcType="DECIMAL" property="eachOrderPiecePercentAfter" />
+    <result column="each_order_piece_percent_Before" jdbcType="DECIMAL" property="eachOrderPiecePercentBefore" />
+    <result column="groud_salesman_amount" jdbcType="DECIMAL" property="groudSalesmanAmount" />
+    <result column="status" jdbcType="VARCHAR" property="status" />
+    <result column="effect_date" jdbcType="TIMESTAMP" property="effectDate" />
+    <result column="invalid_date" jdbcType="TIMESTAMP" property="invalidDate" />
+    <result column="updated_date" jdbcType="TIMESTAMP" property="updatedDate" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    ground_id, ground_name, city_id, groud_scheme_type, ground_type, balance_cycle_type, 
+    balance_describe,validate_ground_define, ground_balance_describe, valid_register_fee, consume_activity_fee_limit, 
+    each_order_piece_fee, each_activity_fee_piece_percent, each_first_recharge_fee_limit, 
+    each_recharge_pirce_fee, each_recharge_fee_limit, user_recharge_amount_before, register_amount_before, 
+    register_amount_after, register_fee_before, register_fee_after, each_order_piece_percent_after, 
+    each_order_piece_percent_Before, groud_salesman_amount, status, effect_date, invalid_date, 
+    updated_date
+  </sql>
+  
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from t_ground_plan_conf
+    where ground_id = #{groundId,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from t_ground_plan_conf
+    where ground_id = #{groundId,jdbcType=INTEGER}
+  </delete>
+  <insert id="insertSelective" parameterType="com.fbw.service.entity.ground.GroundPlanConfEntity">
+    insert into t_ground_plan_conf
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="groundId != null">
+        ground_id,
+      </if>
+      <if test="groundName != null">
+        ground_name,
+      </if>
+      <if test="cityId != null">
+        city_id,
+      </if>
+      <if test="groudSchemeType != null">
+        groud_scheme_type,
+      </if>
+      <if test="groundType != null">
+        ground_type,
+      </if>
+      <if test="balanceCycleType != null">
+        balance_cycle_type,
+      </if>
+      <if test="balanceDescribe != null">
+        balance_describe,
+      </if>
+      <if test="validateGroundDefine != null">
+        validate_ground_define,
+      </if>
+      <if test="groundBalanceDescribe != null">
+        ground_balance_describe,
+      </if>
+      <if test="validRegisterFee != null">
+        valid_register_fee,
+      </if>
+      <if test="consumeActivityFeeLimit != null">
+        consume_activity_fee_limit,
+      </if>
+      <if test="eachOrderPieceFee != null">
+        each_order_piece_fee,
+      </if>
+      <if test="eachActivityFeePiecePercent != null">
+        each_activity_fee_piece_percent,
+      </if>
+      <if test="eachFirstRechargeFeeLimit != null">
+        each_first_recharge_fee_limit,
+      </if>
+      <if test="eachRechargePirceFee != null">
+        each_recharge_pirce_fee,
+      </if>
+      <if test="eachRechargeFeeLimit != null">
+        each_recharge_fee_limit,
+      </if>
+      <if test="userRechargeAmountBefore != null">
+        user_recharge_amount_before,
+      </if>
+      <if test="registerAmountBefore != null">
+        register_amount_before,
+      </if>
+      <if test="registerAmountAfter != null">
+        register_amount_after,
+      </if>
+      <if test="registerFeeBefore != null">
+        register_fee_before,
+      </if>
+      <if test="registerFeeAfter != null">
+        register_fee_after,
+      </if>
+      <if test="eachOrderPiecePercentAfter != null">
+        each_order_piece_percent_after,
+      </if>
+      <if test="eachOrderPiecePercentBefore != null">
+        each_order_piece_percent_Before,
+      </if>
+      <if test="groudSalesmanAmount != null">
+        groud_salesman_amount,
+      </if>
+      <if test="status != null">
+        status,
+      </if>
+      <if test="effectDate != null">
+        effect_date,
+      </if>
+      <if test="invalidDate != null">
+        invalid_date,
+      </if>
+      <if test="updatedDate != null">
+        updated_date,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="groundId != null">
+        #{groundId,jdbcType=INTEGER},
+      </if>
+      <if test="groundName != null">
+        #{groundName,jdbcType=VARCHAR},
+      </if>
+      <if test="cityId != null">
+        #{cityId,jdbcType=VARCHAR},
+      </if>
+      <if test="groudSchemeType != null">
+        #{groudSchemeType,jdbcType=VARCHAR},
+      </if>
+      <if test="groundType != null">
+        #{groundType,jdbcType=VARCHAR},
+      </if>
+      <if test="balanceCycleType != null">
+        #{balanceCycleType,jdbcType=VARCHAR},
+      </if>
+      <if test="balanceDescribe != null">
+        #{balanceDescribe,jdbcType=VARCHAR},
+      </if>
+      <if test="validateGroundDefine != null">
+        #{validateGroundDefine,jdbcType=VARCHAR},
+      </if>
+      <if test="groundBalanceDescribe != null">
+        #{groundBalanceDescribe,jdbcType=VARCHAR},
+      </if>
+      <if test="validRegisterFee != null">
+        #{validRegisterFee,jdbcType=DECIMAL},
+      </if>
+      <if test="consumeActivityFeeLimit != null">
+        #{consumeActivityFeeLimit,jdbcType=DECIMAL},
+      </if>
+      <if test="eachOrderPieceFee != null">
+        #{eachOrderPieceFee,jdbcType=DECIMAL},
+      </if>
+      <if test="eachActivityFeePiecePercent != null">
+        #{eachActivityFeePiecePercent,jdbcType=DECIMAL},
+      </if>
+      <if test="eachFirstRechargeFeeLimit != null">
+        #{eachFirstRechargeFeeLimit,jdbcType=DECIMAL},
+      </if>
+      <if test="eachRechargePirceFee != null">
+        #{eachRechargePirceFee,jdbcType=DECIMAL},
+      </if>
+      <if test="eachRechargeFeeLimit != null">
+        #{eachRechargeFeeLimit,jdbcType=DECIMAL},
+      </if>
+      <if test="userRechargeAmountBefore != null">
+        #{userRechargeAmountBefore,jdbcType=VARCHAR},
+      </if>
+      <if test="registerAmountBefore != null">
+        #{registerAmountBefore,jdbcType=DECIMAL},
+      </if>
+      <if test="registerAmountAfter != null">
+        #{registerAmountAfter,jdbcType=DECIMAL},
+      </if>
+      <if test="registerFeeBefore != null">
+        #{registerFeeBefore,jdbcType=DECIMAL},
+      </if>
+      <if test="registerFeeAfter != null">
+        #{registerFeeAfter,jdbcType=DECIMAL},
+      </if>
+      <if test="eachOrderPiecePercentAfter != null">
+        #{eachOrderPiecePercentAfter,jdbcType=DECIMAL},
+      </if>
+      <if test="eachOrderPiecePercentBefore != null">
+        #{eachOrderPiecePercentBefore,jdbcType=DECIMAL},
+      </if>
+      <if test="groudSalesmanAmount != null">
+        #{groudSalesmanAmount,jdbcType=DECIMAL},
+      </if>
+      <if test="status != null">
+        #{status,jdbcType=VARCHAR},
+      </if>
+      <if test="effectDate != null">
+        #{effectDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="invalidDate != null">
+        #{invalidDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updatedDate != null">
+        #{updatedDate,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <select id="selectByCityId" parameterType="java.lang.String"  resultMap="BaseResultMap">
+  select ground_name,ground_id from t_ground_plan_conf where city_id=#{param1}
+  </select>
+  <select id="selectByGroundId" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+  select 
+  <include refid="Base_Column_List" />
+  from t_ground_plan_conf
+  where ground_id=#{param1}
+  </select>
+</mapper>

@@ -1,0 +1,10 @@
+version: '2'
+services:
+  fbw-service-eureka:
+    image: fbw/fbw-service-eureka:3.0.0-SNAPSHOT
+    ports:
+      - "8761:8761"
+  fbw-service-config:
+    image: fbw/fbw-service-config:3.0.0-SNAPSHOT
+    ports:
+      - "8010:8010"

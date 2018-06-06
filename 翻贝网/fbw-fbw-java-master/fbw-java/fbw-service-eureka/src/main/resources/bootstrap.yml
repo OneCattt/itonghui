@@ -1,0 +1,15 @@
+eureka:
+  client:
+    register-with-eureka: false
+    fetch-registry: false
+    service-url:
+      defaultZone: http://fbw:fbwtest123@127.0.0.1:8761/eureka
+  instance:
+    prefer-ip-address: true
+    instance-id: ${spring.cloud.client.ipAddress}:${server.port}
+spring:
+  application:
+    name: fbw-serivce-eureka
+  cloud:
+    inetutils:
+      use-only-site-local-interfaces: true

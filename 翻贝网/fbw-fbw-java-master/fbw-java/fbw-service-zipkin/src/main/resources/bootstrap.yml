@@ -1,0 +1,7 @@
+spring:
+  application:
+    name: fbw-service-zipkin
+  activemq:
+    broker-url: tcp://172.16.40.21:61616
+    packages:
+      trust-all: true

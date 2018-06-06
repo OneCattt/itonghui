@@ -1,0 +1,397 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.fbw.service.mappers.UserOrderInfoBusinEntityMapper">
+  <resultMap id="BaseResultMap" type="com.fbw.service.entity.user.UserOrderInfoBusinEntity">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="user_id" jdbcType="INTEGER" property="userId" />
+    <result column="shop_id" jdbcType="INTEGER" property="shopId" />
+    <result column="order_number" jdbcType="VARCHAR" property="orderNumber" />
+     <result column="input_amount" jdbcType="DECIMAL" property="inputAmount" />
+    <result column="order_amount" jdbcType="DECIMAL" property="orderAmount" />
+    <result column="shop_amount" jdbcType="DECIMAL" property="shopAmount" />
+    <result column="actual_amount" jdbcType="DECIMAL" property="actualAmount" />
+    <result column="red_envelope_amount" jdbcType="DECIMAL" property="redEnvelopeAmount" />
+    <result column="red_envelope_id" jdbcType="INTEGER" property="redEnvelopeId" />
+    <result column="comment_status" jdbcType="INTEGER" property="commentStatus" />
+    <result column="status" jdbcType="INTEGER" property="status" />
+    <result column="shop_user_id" jdbcType="INTEGER" property="shopuserId" />
+    <result column="account_status" jdbcType="INTEGER" property="accountStatus" />
+    <result column="account_time" jdbcType="TIMESTAMP" property="accountTime" />
+    <result column="account_amount" jdbcType="DECIMAL" property="accountAmount" />
+    <result column="refund_status" jdbcType="INTEGER" property="refundStatus" />
+    <result column="start_balance" jdbcType="DECIMAL" property="startBalance" />
+    <result column="last_balance" jdbcType="DECIMAL" property="lastBalance" />
+    <result column="city_id" jdbcType="INTEGER" property="cityId" />
+    <result column="maintainer_id" jdbcType="INTEGER" property="maintainerId" />
+    <result column="double_flower_status" jdbcType="INTEGER" property="doubleFlowerStatus" />
+    <result column="info" jdbcType="VARCHAR" property="info" />
+    <result column="created_at" jdbcType="TIMESTAMP" property="createdAt" />
+    <result column="updated_at" jdbcType="TIMESTAMP" property="updatedAt" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="address" jdbcType="VARCHAR" property="address" />
+    <result column="first_class_id" jdbcType="INTEGER" property="firstClassId" />
+    <result column="second_class_id" jdbcType="INTEGER" property="secondClassId" />
+    <result column="first_class_name" jdbcType="VARCHAR" property="firstClassName" />
+    <result column="second_class_name" jdbcType="VARCHAR" property="secondClassName" />
+  </resultMap>
+ <select id="getUserOrderList" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+	SELECT
+		a.shop_id,
+		b. NAME,
+		b.address,
+	  b.first_class_id,
+	  b.first_class_name,
+	  b.second_class_id,
+	  b.second_class_name,
+		a.order_amount,
+		a.refund_status,
+		a.comment_status,
+		a.order_number,
+		a.created_at
+	FROM
+		t_user_order_info_busin a,
+		t_shop_info_busin b
+	WHERE
+	a.shop_id = b.id AND
+		user_id = #{param1}
+	ORDER BY
+		created_at DESC
+	  limit #{param2},20
+  </select>
+  <select id="getUserNoCommOrderList" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+	SELECT
+		a.shop_id,
+		b. NAME,
+		b.address,
+	  b.first_class_id,
+	  b.first_class_name,
+	  b.second_class_id,
+	  b.second_class_name,
+		a.order_amount,
+		a.order_number,
+		a.created_at
+	FROM
+		t_user_order_info_busin a,
+		t_shop_info_busin b
+	WHERE
+		a.shop_id = b.id
+	AND user_id = #{param1}
+	AND comment_status = '0'
+	AND refund_status = '0'
+	ORDER BY
+		created_at DESC
+	LIMIT #{param2},
+	 20
+  </select>
+  <select id="getUserOrderInfo" parameterType="java.lang.String" resultMap="BaseResultMap">
+   select 
+   shop_id,
+    (
+			SELECT
+				NAME
+			FROM
+				t_shop_info_busin b
+			WHERE
+				b.id = a.shop_id
+		) NAME,
+		(
+			SELECT
+				address
+			FROM
+				t_shop_info_busin b
+			WHERE
+				b.id = a.shop_id
+		) address,
+  double_flower_status,order_number,order_amount,actual_amount,red_envelope_amount,created_at 
+   <if test="param2==1">
+  ,updated_at
+  </if>
+   from t_user_order_info_busin a
+   where order_number=#{param1}
+  </select>
+  <select id="getUserOrderCommentAndRefund" parameterType="java.lang.String" resultMap="BaseResultMap">
+   select 
+   comment_status,refund_status 
+   from t_user_order_info_busin 
+   where order_number=#{param1}
+  </select>
+   <select id="getCountUserNoCommOrder" parameterType="java.lang.Integer" resultType="java.lang.Integer">
+   select 
+   count(id)
+   from t_user_order_info_busin 
+   where user_id=#{param1} and comment_status='0' and refund_status='0' 
+  </select>
+  <insert id="saveUserOrderInfo" parameterType="com.fbw.service.entity.user.UserOrderInfoBusinEntity">
+  <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Integer">
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into t_user_order_info_busin
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="userId != null">
+        user_id,
+      </if>
+      <if test="shopId != null">
+        shop_id,
+      </if>
+
+      <if test="orderNumber != null">
+        order_number,
+      </if>
+      <if test="inputAmount != null">
+        input_amount,
+      </if>
+      <if test="orderAmount != null">
+        order_amount,
+      </if>
+      <if test="shopAmount != null">
+        shop_amount,
+      </if>
+      <if test="actualAmount != null">
+        actual_amount,
+      </if>
+      <if test="redEnvelopeAmount != null">
+        red_envelope_amount,
+      </if>
+      <if test="redEnvelopeId != null">
+        red_envelope_id,
+      </if>
+      <if test="commentStatus != null">
+        comment_status,
+      </if>
+      <if test="status != null">
+        status,
+      </if>
+      <if test="shopuserId != null">
+        shop_user_id,
+      </if>
+      <if test="accountStatus != null">
+        account_status,
+      </if>
+      <if test="accountTime != null">
+        account_time,
+      </if>
+      <if test="accountAmount != null">
+        account_amount,
+      </if>
+      <if test="refundStatus != null">
+        refund_status,
+      </if>
+      <if test="startBalance != null">
+        start_balance,
+      </if>
+      <if test="lastBalance != null">
+        last_balance,
+      </if>
+      <if test="cityId != null">
+        city_id,
+      </if>
+      <if test="maintainerId != null">
+        maintainer_id,
+      </if>
+      <if test="doubleFlowerStatus != null">
+        double_flower_status,
+      </if>
+      <if test="info != null">
+        info,
+      </if>
+      <if test="createdAt != null">
+        created_at,
+      </if>
+      <if test="updatedAt != null">
+        updated_at,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="userId != null">
+        #{userId,jdbcType=INTEGER},
+      </if>
+      <if test="shopId != null">
+        #{shopId,jdbcType=INTEGER},
+      </if>
+      <if test="orderNumber != null">
+        #{orderNumber,jdbcType=VARCHAR},
+      </if>
+      <if test="inputAmount != null">
+        #{inputAmount,jdbcType=DECIMAL},
+      </if>
+      <if test="orderAmount != null">
+        #{orderAmount,jdbcType=DECIMAL},
+      </if>
+      <if test="shopAmount != null">
+        #{shopAmount,jdbcType=DECIMAL},
+      </if>
+      <if test="actualAmount != null">
+        #{actualAmount,jdbcType=DECIMAL},
+      </if>
+      <if test="redEnvelopeAmount != null">
+        #{redEnvelopeAmount,jdbcType=DECIMAL},
+      </if>
+      <if test="redEnvelopeId != null">
+        #{redEnvelopeId,jdbcType=INTEGER},
+      </if>
+      <if test="commentStatus != null">
+        #{commentStatus,jdbcType=INTEGER},
+      </if>
+      <if test="status != null">
+        #{status,jdbcType=INTEGER},
+      </if>
+      <if test="shopuserId != null">
+        #{shopuserId,jdbcType=INTEGER},
+      </if>
+      <if test="accountStatus != null">
+        #{accountStatus,jdbcType=INTEGER},
+      </if>
+      <if test="accountTime != null">
+        #{accountTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="accountAmount != null">
+        #{accountAmount,jdbcType=DECIMAL},
+      </if>
+      <if test="refundStatus != null">
+        #{refundStatus,jdbcType=INTEGER},
+      </if>
+      <if test="startBalance != null">
+        #{startBalance,jdbcType=DECIMAL},
+      </if>
+      <if test="lastBalance != null">
+        #{lastBalance,jdbcType=DECIMAL},
+      </if>
+      <if test="cityId != null">
+        #{cityId,jdbcType=INTEGER},
+      </if>
+      <if test="maintainerId != null">
+        #{maintainerId,jdbcType=INTEGER},
+      </if>
+      <if test="doubleFlowerStatus != null">
+        #{doubleFlowerStatus,jdbcType=VARCHAR},
+      </if>
+      <if test="info != null">
+        #{info,jdbcType=VARCHAR},
+      </if>
+      <if test="createdAt != null">
+        #{createdAt,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updatedAt != null">
+        #{updatedAt,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <select id="getUserConsumptionTimes" parameterType="com.fbw.service.entity.user.UserOrderInfoBusinEntity" resultType="java.lang.Integer">
+  select count(id)
+  from t_user_order_info_busin
+  where user_id=#{userId} and shop_id=#{shopId} and refund_status=0  and to_days(created_at) = to_days(now())
+  </select>
+   <select id="getShopConsumptionTimes" parameterType="java.lang.Integer" resultType="java.lang.Integer">
+	  select count(id)
+	  from t_user_order_info_busin
+	  where shop_id=#{shopId} and refund_status=0  and to_days(created_at) = to_days(now())
+  </select>
+  <select id="getUserOrderRechargeListByMobile" parameterType="java.lang.Integer" resultType="java.util.HashMap">
+	SELECT
+	groupId,money,refundStatus,doubleFlowerStatus,rechargeOrOrder,DATE_FORMAT(date,"%Y-%m-%d %T") as date
+    FROM
+	(
+		SELECT
+			order_number AS groupId,
+			created_at AS date,
+			double_fee AS money,
+			2 AS rechargeOrOrder,
+			0 AS refundStatus,
+			4 AS doubleFlowerStatus
+		FROM
+			(
+				SELECT
+					created_at,
+					double_fee,
+					order_number,
+					recharge_status,
+					DATEDIFF(NOW(), created_at) date
+				FROM
+					t_recharge_busin
+				WHERE
+					user_id = #{param1}
+				AND recharge_status = 1
+			) a
+		WHERE
+			a.date <![CDATA[ <= ]]> 90
+		UNION
+			(
+				SELECT
+					order_number AS groupId,
+					created_at AS date,
+					actual_amount AS money,
+					1 AS rechargeOrOrder,
+					refundStatus,
+					double_flower_status as doubleFlowerStatus
+				FROM
+					(
+						SELECT
+							order_number,
+							double_flower_status,
+							created_at,
+							DATEDIFF(NOW(), created_at) date,
+							refund_status as refundStatus,
+							actual_amount
+						FROM
+							t_user_order_info_busin
+						WHERE
+							user_id = #{param1}
+					) t
+				WHERE
+					t.date <![CDATA[ <= ]]> 90
+			)
+		UNION
+			(
+				SELECT
+					id as groupId,
+					created_at AS date,
+					money,
+					2 AS rechargeOrOrder,
+					1 AS refundStatus,
+					4 AS doubleFlowerStatus
+				FROM
+					(
+						SELECT
+							id,
+							created_at,
+							DATEDIFF(NOW(), created_at) date,
+							money
+						FROM
+							t_recharge_refunds
+						WHERE
+							user_id = #{param1}
+					) t
+				WHERE
+					t.date <![CDATA[ <= ]]> 90
+			)
+	) b
+ORDER BY
+	b.date DESC
+	limit #{param2},20
+  </select>
+  <update id="updateCommentStatus" parameterType="java.lang.String">
+  UPDATE t_user_order_info_busin
+	SET comment_status = '1'
+	WHERE
+		comment_status = '0'
+	AND refund_status = '0'
+	AND order_number = #{orderNumber}
+  </update>
+  <select id="selectSevenDayNocommentOrder" resultMap="BaseResultMap">
+  SELECT
+	user_id,
+	order_number,
+	shop_id
+  FROM
+	t_user_order_info_busin
+  WHERE
+	to_days(now()) - to_days(created_at) > 6
+  AND comment_status = 0
+  AND refund_status = 0
+  </select>
+  <select id="getShopOrderNumber" parameterType="java.lang.Integer" resultType="java.lang.Integer">
+  select count(id)
+  from t_user_order_info_busin
+  where shop_id=#{shopId}
+  </select>
+</mapper>

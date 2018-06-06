@@ -1,0 +1,201 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.fbw.service.mapper.UserMapper">
+  <resultMap id="BaseResultMap" type="com.fbw.service.entity.user.UserOrderInfoBusinEntity">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="user_id" jdbcType="INTEGER" property="userId" />
+    <result column="shop_id" jdbcType="INTEGER" property="shopId" />
+    <result column="order_number" jdbcType="VARCHAR" property="orderNumber" />
+    <result column="input_amount" jdbcType="DECIMAL" property="inputAmount" />
+    <result column="order_amount" jdbcType="DECIMAL" property="orderAmount" />
+    <result column="shop_amount" jdbcType="DECIMAL" property="shopAmount" />
+    <result column="actual_amount" jdbcType="DECIMAL" property="actualAmount" />
+    <result column="red_envelope_amount" jdbcType="DECIMAL" property="redEnvelopeAmount" />
+    <result column="red_envelope_id" jdbcType="INTEGER" property="redEnvelopeId" />
+    <result column="comment_status" jdbcType="INTEGER" property="commentStatus" />
+    <result column="status" jdbcType="INTEGER" property="status" />
+    <result column="shopuser_id" jdbcType="INTEGER" property="shopuserId" />
+    <result column="account_status" jdbcType="INTEGER" property="accountStatus" />
+    <result column="account_time" jdbcType="TIMESTAMP" property="accountTime" />
+    <result column="account_amount" jdbcType="DECIMAL" property="accountAmount" />
+    <result column="refund_status" jdbcType="INTEGER" property="refundStatus" />
+    <result column="start_balance" jdbcType="DECIMAL" property="startBalance" />
+    <result column="last_balance" jdbcType="DECIMAL" property="lastBalance" />
+    <result column="city_id" jdbcType="INTEGER" property="cityId" />
+    <result column="maintainer_id" jdbcType="INTEGER" property="maintainerId" />
+    <result column="double_flower_status" jdbcType="INTEGER" property="doubleFlowerStatus" />
+    <result column="info" jdbcType="VARCHAR" property="info" />
+    <result column="created_at" jdbcType="TIMESTAMP" property="createdAt" />
+    <result column="updated_at" jdbcType="TIMESTAMP" property="updatedAt" />
+  </resultMap>
+  
+  <insert id="saveUserOrderInfo" parameterType="com.fbw.service.entity.user.UserOrderInfoBusinEntity">
+  <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Integer">
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into t_user_order_info_busin
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="userId != null">
+        user_id,
+      </if>
+      <if test="shopId != null">
+        shop_id,
+      </if>
+      <if test="orderNumber != null">
+        order_number,
+      </if>
+      <if test="orderAmount != null">
+        order_amount,
+      </if>
+      <if test="inputAmount != null">
+        input_amount,
+      </if>
+      <if test="shopAmount != null">
+        shop_amount,
+      </if>
+      <if test="actualAmount != null">
+        actual_amount,
+      </if>
+      <if test="redEnvelopeAmount != null">
+        red_envelope_amount,
+      </if>
+      <if test="redEnvelopeId != null">
+        red_envelope_id,
+      </if>
+      <if test="commentStatus != null">
+        comment_status,
+      </if>
+      <if test="status != null">
+        status,
+      </if>
+      <if test="shopuserId != null">
+        shopuser_id,
+      </if>
+      <if test="accountStatus != null">
+        account_status,
+      </if>
+      <if test="accountTime != null">
+        account_time,
+      </if>
+      <if test="accountAmount != null">
+        account_amount,
+      </if>
+      <if test="refundStatus != null">
+        refund_status,
+      </if>
+      <if test="startBalance != null">
+        start_balance,
+      </if>
+      <if test="lastBalance != null">
+        last_balance,
+      </if>
+      <if test="cityId != null">
+        city_id,
+      </if>
+      <if test="maintainerId != null">
+        maintainer_id,
+      </if>
+      <if test="doubleFlowerStatus != null">
+        double_flower_status,
+      </if>
+      <if test="info != null">
+        info,
+      </if>
+      <if test="createdAt != null">
+        created_at,
+      </if>
+      <if test="updatedAt != null">
+        updated_at,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="userId != null">
+        #{userId,jdbcType=INTEGER},
+      </if>
+      <if test="shopId != null">
+        #{shopId,jdbcType=INTEGER},
+      </if>
+      <if test="orderNumber != null">
+        #{orderNumber,jdbcType=VARCHAR},
+      </if>
+      <if test="orderAmount != null">
+        #{orderAmount,jdbcType=DECIMAL},
+      </if>
+      <if test="inputAmount != null">
+        #{inputAmount,jdbcType=DECIMAL},
+      </if>
+      <if test="shopAmount != null">
+        #{shopAmount,jdbcType=DECIMAL},
+      </if>
+      <if test="actualAmount != null">
+        #{actualAmount,jdbcType=DECIMAL},
+      </if>
+      <if test="redEnvelopeAmount != null">
+        #{redEnvelopeAmount,jdbcType=DECIMAL},
+      </if>
+      <if test="redEnvelopeId != null">
+        #{redEnvelopeId,jdbcType=INTEGER},
+      </if>
+      <if test="commentStatus != null">
+        #{commentStatus,jdbcType=INTEGER},
+      </if>
+      <if test="status != null">
+        #{status,jdbcType=INTEGER},
+      </if>
+      <if test="shopuserId != null">
+        #{shopuserId,jdbcType=INTEGER},
+      </if>
+      <if test="accountStatus != null">
+        #{accountStatus,jdbcType=INTEGER},
+      </if>
+      <if test="accountTime != null">
+        #{accountTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="accountAmount != null">
+        #{accountAmount,jdbcType=DECIMAL},
+      </if>
+      <if test="refundStatus != null">
+        #{refundStatus,jdbcType=INTEGER},
+      </if>
+      <if test="startBalance != null">
+        #{startBalance,jdbcType=DECIMAL},
+      </if>
+      <if test="lastBalance != null">
+        #{lastBalance,jdbcType=DECIMAL},
+      </if>
+      <if test="cityId != null">
+        #{cityId,jdbcType=INTEGER},
+      </if>
+      <if test="maintainerId != null">
+        #{maintainerId,jdbcType=INTEGER},
+      </if>
+      <if test="doubleFlowerStatus != null">
+        #{doubleFlowerStatus,jdbcType=VARCHAR},
+      </if>
+      <if test="info != null">
+        #{info,jdbcType=VARCHAR},
+      </if>
+      <if test="createdAt != null">
+        #{createdAt,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updatedAt != null">
+        #{updatedAt,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  
+  <update id="updateNewBalanceByMobileBalance">
+    update 
+    t_user_info_busin
+    set
+    balance=#{param3}
+    where  mobile = #{param1} and balance=#{param2}
+  </update>
+  
+  <update id="updateRedPacketStatus" parameterType="java.lang.Integer">
+  update 
+  t_user_red_packet_busin 
+  set status=0,use_time=now()
+  where id=#{id} and status=1
+  </update>
+</mapper>

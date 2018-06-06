@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.fbw.service.mapper.ShopBusinessAreaMapper">
+  <resultMap id="BaseResultMap" type="com.fbw.service.entity.shop.ShopBusinessAreaEntity">
+    <result column="id" jdbcType="INTEGER" property="businessAreaId" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="district_id" jdbcType="INTEGER" property="districtId" />
+    <result column="letter" jdbcType="VARCHAR" property="letter" />
+    <result column="sort" jdbcType="INTEGER" property="sort" />
+    <result column="status" jdbcType="INTEGER" property="status" />
+    <result column="created_at" jdbcType="TIMESTAMP" property="createdAt" />
+    <result column="updated_at" jdbcType="TIMESTAMP" property="updatedAt" />
+  </resultMap>
+  <select id="getShopsBusinessArea"  parameterType = "java.lang.Integer" resultMap="BaseResultMap">
+  	SELECT
+		id ,
+		NAME ,
+		district_id ,
+		letter 
+	FROM
+		t_shop_business_area
+	WHERE
+		STATUS = 1
+	AND district_id = #{districtId}
+	
+	ORDER BY
+		sort
+  </select>
+</mapper>

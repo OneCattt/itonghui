@@ -1,0 +1,200 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.fbw.service.mapper.GroundRegisterUserDetailBusinEntityMapper">
+  <resultMap id="BaseResultMap" type="com.fbw.service.entity.ground.GroundRegisterUserDetailBusinEntity">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="city_id" jdbcType="VARCHAR" property="cityId" />
+    <result column="shop_assistant_id" jdbcType="VARCHAR" property="shopAssistantId" />
+    <result column="shop_id" jdbcType="VARCHAR" property="shopId" />
+    <result column="salesman_id" jdbcType="VARCHAR" property="salesmanId" />
+    <result column="register_source" jdbcType="VARCHAR" property="registerSource" />
+    <result column="register_mobile" jdbcType="VARCHAR" property="registerMobile" />
+    <result column="order_amount" jdbcType="INTEGER" property="orderAmount" />
+    <result column="ground_order_amount" jdbcType="INTEGER" property="groundOrderAmount" />
+    <result column="ground_type" jdbcType="VARCHAR" property="groundType" />
+    <result column="ground_order_activity_fee" jdbcType="DECIMAL" property="groundOrderActivityFee" />
+    <result column="register_date" jdbcType="TIMESTAMP" property="registerDate" />
+    <result column="register_status" jdbcType="VARCHAR" property="registerStatus" />
+    <result column="history_ground_id" jdbcType="VARCHAR" property="historyGroundId" />
+    
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, city_id, shop_assistant_id, shop_id, salesman_id, register_source, register_mobile, 
+    order_amount, ground_order_amount, ground_type, ground_order_activity_fee, register_date, 
+    register_status, history_ground_id
+  </sql>
+ <insert id="saveRegisterUserDetailWithGround" parameterType="com.fbw.service.entity.ground.GroundRegisterUserDetailBusinEntity">
+    <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Integer">
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into t_ground_register_user_detail_busin
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="cityId != null">
+        city_id,
+      </if>
+      <if test="shopAssistantId != null">
+        shop_assistant_id,
+      </if>
+      <if test="shopId != null">
+        shop_id,
+      </if>
+      <if test="salesmanId != null">
+        salesman_id,
+      </if>
+      <if test="registerSource != null">
+        register_source,
+      </if>
+      <if test="registerMobile != null">
+        register_mobile,
+      </if>
+      <if test="orderAmount != null">
+        order_amount,
+      </if>
+      <if test="groundOrderAmount != null">
+        ground_order_amount,
+      </if>
+      <if test="groundType != null">
+        ground_type,
+      </if>
+      <if test="groundOrderActivityFee != null">
+        ground_order_activity_fee,
+      </if>
+      <if test="registerDate != null">
+        register_date,
+      </if>
+      <if test="registerStatus != null">
+        register_status,
+      </if>
+      <if test="historyGroundId != null">
+        history_ground_id,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="cityId != null">
+        #{cityId,jdbcType=VARCHAR},
+      </if>
+      <if test="shopAssistantId != null">
+        #{shopAssistantId,jdbcType=VARCHAR},
+      </if>
+      <if test="shopId != null">
+        #{shopId,jdbcType=VARCHAR},
+      </if>
+      <if test="salesmanId != null">
+        #{salesmanId,jdbcType=VARCHAR},
+      </if>
+      <if test="registerSource != null">
+        #{registerSource,jdbcType=VARCHAR},
+      </if>
+      <if test="registerMobile != null">
+        #{registerMobile,jdbcType=VARCHAR},
+      </if>
+      <if test="orderAmount != null">
+        #{orderAmount,jdbcType=INTEGER},
+      </if>
+      <if test="groundOrderAmount != null">
+        #{groundOrderAmount,jdbcType=INTEGER},
+      </if>
+      <if test="groundType != null">
+        #{groundType,jdbcType=VARCHAR},
+      </if>
+      <if test="groundOrderActivityFee != null">
+        #{groundOrderActivityFee,jdbcType=DECIMAL},
+      </if>
+      <if test="registerDate != null">
+        #{registerDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="registerStatus != null">
+        #{registerStatus,jdbcType=VARCHAR},
+      </if>
+      <if test="historyGroundId != null">
+       #{historyGroundId,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <select id="selectCount" parameterType="java.lang.String"  resultMap="BaseResultMap">
+	SELECT
+	sum(order_amount) order_amount,
+	sum(ground_order_activity_fee) ground_order_activity_fee
+	FROM
+	t_ground_register_user_detail_busin
+	where city_id=#{param1}
+	<if test="param2!=null">
+	and salesman_id = #{param2}
+	</if>
+  </select>
+  <select id="selectIsExistMobile" parameterType="java.lang.String" resultType="java.lang.Integer">
+    select 
+     count(id)
+     from t_ground_register_user_detail_busin
+     where register_mobile =#{registerMobile}
+  </select>
+  <select id="selectAllByGroundId" parameterType="java.util.HashMap"  resultMap="BaseResultMap">
+	  select 
+	  <include refid="Base_Column_List" />
+	  from
+	  t_ground_register_user_detail_busin where history_ground_id=#{historyGroundId}
+	  limit #{begin},#{end}
+  </select>
+  <select id="selectAllByShopIdAndShopAssistantId" parameterType="java.lang.String"  resultType="java.util.HashMap">
+	SELECT
+		date_format(t.register_date, '%Y-%m-%d') date,
+	    COUNT(id) userNumber,
+	    COUNT(CASE WHEN `register_status` =1 THEN 1 ELSE NULL END) validUserNumber,
+		sum(order_amount) orderAmount,
+		sum(ground_order_amount) groundOrderAmount,
+	    SUM(ground_order_activity_fee) groundOrderActivityFee
+	FROM
+		t_ground_register_user_detail_busin t
+	WHERE
+		shop_id = #{param1}
+    AND city_id = #{param2}
+	AND t.register_date IS NOT NULL
+	GROUP BY
+		date
+	ORDER BY
+	date DESC
+  </select>
+  <select id="selectUserByShopIdAndDate" parameterType="java.lang.String" resultMap="BaseResultMap">
+	SELECT
+		register_date,
+		register_mobile,
+	    register_source,
+		register_status,
+		order_amount,
+		ground_order_amount,
+		ground_order_activity_fee
+	FROM
+		t_ground_register_user_detail_busin t
+	WHERE
+		shop_id = #{param1}
+	AND city_id = #{param2}
+	AND date_format(t.register_date, '%Y-%m-%d')=#{param3}
+	<if test="param4!=null">
+	 and register_mobile like concat('%',#{param4},'%')
+	</if>
+	ORDER BY
+		t.register_date ASC
+  </select>
+  <update id="updateRegisterUserOrder" parameterType="com.fbw.service.entity.ground.GroundPersonalInfoBusinEntity">
+	  UPDATE 
+	  t_ground_register_user_detail_busin 
+	  <set>
+	   <if test="orderAmount != null">
+	        order_amount = #{orderAmount,jdbcType=INTEGER},
+	      </if>
+	      <if test="groundOrderAmount != null">
+	        ground_order_amount = #{groundOrderAmount,jdbcType=INTEGER},
+	      </if>
+	      <if test="groundOrderActivityFee != null">
+	        ground_order_activity_fee = #{groundOrderActivityFee,jdbcType=DECIMAL},
+	      </if>
+	  </set>
+	  where
+	  register_mobile=#{registerMobile}
+  </update>
+  <select id="selectByRegisterMobile" parameterType="java.lang.String" resultMap="BaseResultMap">
+  select 
+  <include refid="Base_Column_List" />
+   from t_ground_register_user_detail_busin where register_mobile=#{mobile}
+  </select>
+</mapper>

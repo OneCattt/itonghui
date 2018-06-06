@@ -1,0 +1,391 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.fbw.service.mapper.ShopInfoMapper">
+  <resultMap id="BaseResultMap" type="com.fbw.service.entity.shop.ShopInfoEntity">
+    <id column="id" jdbcType="INTEGER" property="shopId" />
+    <result column="code" jdbcType="VARCHAR" property="code" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="logo" jdbcType="VARCHAR" property="logo" />
+    <result column="first_class_id" jdbcType="INTEGER" property="firstClassId" />
+    <result column="second_class_id" jdbcType="INTEGER" property="secondClassId" />
+    <result column="shop_label" jdbcType="VARCHAR" property="shopLabel" />
+    <result column="province_id" jdbcType="INTEGER" property="provinceId" />
+    <result column="city_id" jdbcType="INTEGER" property="cityId" />
+    <result column="district_id" jdbcType="INTEGER" property="districtId" />
+    <result column="business_area_id" jdbcType="INTEGER" property="businessAreaId" />
+    <result column="longitude" jdbcType="VARCHAR" property="longitude" />
+    <result column="latitude" jdbcType="VARCHAR" property="latitude" />
+    <result column="status" jdbcType="INTEGER" property="status" />
+    <result column="is_new_shop" jdbcType="INTEGER" property="isNewShop" />
+    <result column="browse_num" jdbcType="INTEGER" property="browseNum" />
+    <result column="collect_num" jdbcType="INTEGER" property="collectNum" />
+    <result column="grade" jdbcType="VARCHAR" property="grade" />
+    <result column="list_photo" jdbcType="VARCHAR" property="listPhoto" />
+    <result column="is_event" jdbcType="INTEGER" property="isEvent" />
+    <result column="next_event" jdbcType="DATE" property="nextEvent" />
+    <result column="first_class_name" jdbcType="VARCHAR" property="firstClassName" />
+    <result column="second_class_name" jdbcType="VARCHAR" property="secondClassName" />
+    <result column="city_name" jdbcType="VARCHAR" property="cityName" />
+    <result column="address" jdbcType="VARCHAR" property="address" />
+    <result column="district_name" jdbcType="VARCHAR" property="districtName" />
+    <result column="business_area_name" jdbcType="VARCHAR" property="businessAreaName" />
+    <result column="order_number" jdbcType="INTEGER" property="orderNumber" />
+    <result column="comment_number" jdbcType="INTEGER" property="commentNumber" />
+    <result column="comment_scores" jdbcType="DECIMAL" property="commentScores" />
+    <result column="comment_mark" jdbcType="DECIMAL" property="commentMark" />
+    <result column="maintainer_id" jdbcType="INTEGER" property="maintainerId" />
+    <result column="created_at" jdbcType="TIMESTAMP" property="createdAt" />
+    <result column="updated_at" jdbcType="TIMESTAMP" property="updatedAt" />
+    <result column="distance" jdbcType="TIMESTAMP" property="distance" />
+    <result column="defaultSort" jdbcType="DOUBLE" property="defaultSort" />
+    <result column="popularity" jdbcType="DOUBLE" property="popularity" />
+  </resultMap>
+  
+ 
+  
+  <!-- 根据shopid查询商户信息 -->
+  <select id="getShopsInfoByShopIdOne" parameterType = "java.util.HashMap" resultMap="BaseResultMap">
+  	select id,code,name,logo,city_id,address,status,is_new_shop,browse_num,collect_num,shop_label,first_class_name,second_class_name,district_name,business_area_name,
+				first_class_id,second_class_id,district_id,business_area_id,latitude,longitude,list_photo,is_event,order_number,comment_mark,created_at
+	    from t_shop_info_busin
+	    where id = #{shopId}
+  </select>
+  
+  <!-- 根据code查询商户信息 -->
+  <select id="getShopsInfoByCode" parameterType = "java.util.HashMap" resultMap="BaseResultMap">
+  	select id,code,name,logo,city_id,address,status,is_new_shop,browse_num,collect_num,shop_label,first_class_name,second_class_name,district_name,business_area_name,
+				first_class_id,second_class_id,district_id,business_area_id,latitude,longitude,list_photo,is_event,order_number,comment_mark,created_at
+	    from t_shop_info_busin
+	    where code = #{code}
+  </select>
+  
+  <!-- 根据shopid查询商户信息(带距离) -->
+  <select id="getShopsInfoByShopIdTwo" parameterType = "java.util.HashMap" resultMap="BaseResultMap">
+  	select id,code,name,logo,address,city_id,status,is_new_shop,browse_num,collect_num,shop_label,first_class_name,second_class_name,district_name,business_area_name,
+				first_class_id,second_class_id,district_id,business_area_id,latitude,longitude,list_photo,is_event,order_number,comment_mark,created_at,
+		ROUND(
+	        6378.138 * 2 * ASIN(
+	            SQRT(
+	                POW(
+	                    SIN(
+	                        (
+	                            ${latitude} * PI() / 180 - latitude * PI() / 180
+	                        ) / 2
+	                    ),
+	                    2
+	                ) + COS(${latitude} * PI() / 180) * COS(latitude * PI() / 180) * POW(
+	                    SIN(
+	                        (
+	                            ${longitude} * PI() / 180 - longitude * PI() / 180
+	                        ) / 2
+	                    ),
+	                    2
+	                )
+	            )
+	        ) * 1000
+	    ) AS distance 
+	    from t_shop_info_busin
+	    where id = #{shopId}
+  </select>
+  
+  <!-- 搜索 -->
+  <select id="getSearchShop" parameterType="java.util.HashMap" resultMap="BaseResultMap" >
+  	select shops.*,
+		ROUND(
+	        6378.138 * 2 * ASIN(
+	            SQRT(
+	                POW(
+	                    SIN(
+	                        (
+	                            ${latitude} * PI() / 180 - shops.latitude * PI() / 180
+	                        ) / 2
+	                    ),
+	                    2
+	                ) + COS(${latitude} * PI() / 180) * COS(shops.latitude * PI() / 180) * POW(
+	                    SIN(
+	                        (
+	                            ${longitude} * PI() / 180 - shops.longitude * PI() / 180
+	                        ) / 2
+	                    ),
+	                    2
+	                )
+	            )
+	        ) * 1000
+	    ) AS distance 
+	from 
+	(select id,code,name,logo,shop_label,city_id,address,status,is_new_shop,browse_num,collect_num,first_class_name,second_class_name,district_name,business_area_name,first_class_id,second_class_id,district_id,business_area_id,latitude,longitude,list_photo,is_event
+	from t_shop_info_busin t
+	where 
+		t.city_id = ${cityId}
+		AND(
+			t.STATUS = 1 OR (
+		<![CDATA[t.STATUS = 0 AND to_days(now()) - to_days(t.updated_at) < 8)]]> 
+		)
+		AND (t.name like concat('%',#{searchName},'%') 
+		or t.first_class_name like concat('%',#{searchName},'%') 
+		or t.second_class_name like concat('%',#{searchName},'%') 
+		or t.shop_label like concat('%',#{searchName},'%') 
+		or t.business_area_name like concat('%',#{searchName},'%'))
+		order by t.status desc,t.is_event DESC
+	limit ${page},20) as shops
+	order by status desc,is_event DESC,distance
+  </select>
+
+  <!-- 筛选,不带翻倍日的 -->
+  <select id="getScreenShops" parameterType="java.util.HashMap" resultMap="BaseResultMap">
+  	SELECT
+		shops.*,
+		(0.8*shops.distance/1000+1.5/shops.order_number+0.5/shops.comment_mark) as defaultSort,
+		(0.5 * shops.order_number + 600/shops.browse_num + 100/shops.collect_num ) as popularity
+	FROM
+		(
+			SELECT
+				id,code,name,logo,city_id,address,status,browse_num,collect_num,is_new_shop,shop_label,first_class_name,second_class_name,district_name,business_area_name,
+				first_class_id,second_class_id,district_id,business_area_id,latitude,longitude,list_photo,is_event,order_number,comment_mark,created_at,ROUND(
+					6378.138 * 2 * ASIN(
+						SQRT(
+							POW(
+								SIN(
+									(
+										${latitude} * PI() / 180 - t.latitude * PI() / 180
+									) / 2
+								) ,
+								2
+							) + COS(${latitude} * PI() / 180) * COS(t.latitude * PI() / 180) * POW(
+								SIN(
+									(
+										${longitude} * PI() / 180 - t.longitude * PI() / 180
+									) / 2
+								) ,
+								2
+							)
+						)
+					) * 1000
+				) AS distance
+			FROM
+				t_shop_info_busin t
+		) AS shops 
+	WHERE
+	shops.city_id = ${cityId}
+	AND shops.status=1
+	<if test="firstClassId != null and firstClassId != ''">
+		AND shops.first_class_id = ${firstClassId}
+	</if>
+	<if test="secondClassId != null and secondClassId != ''">
+		AND shops.second_class_id = ${secondClassId}
+	</if>
+	<if test="districtId != null and districtId != ''">
+		AND shops.district_id = ${districtId}
+	</if>
+	<if test="businessAreaId != null and businessAreaId != ''">
+		AND shops.business_area_id = ${businessAreaId}
+	</if>
+	<if test="isNewShop != null and isNewShop != ''">
+		<!-- <![CDATA[AND to_days(now())-to_days(shops.created_at) < 30]]>  -->
+		AND shops.is_new_shop = ${isNewShop}
+	</if>
+	<if test="distance != null and distance != ''">
+	<![CDATA[AND shops.distance < ${distance}]]> 
+	</if>
+	<if test="shopId != null and shopId != ''">
+		AND shops.id != #{shopId}
+	</if>
+	<if test="sortType == 0 || sortType == null">
+		ORDER BY defaultSort
+	</if>
+	<if test="sortType == 1">
+		ORDER BY distance
+	</if>
+	<if test="sortType == 2">
+		ORDER BY popularity
+	</if>
+	<if test="sortType == 3">
+		ORDER BY shops.created_at
+	</if>
+	<if test="sortType == 4">
+		ORDER BY shops.comment_mark DESC
+	</if>
+	limit ${page},20
+  </select>
+  
+  <!-- 筛选 -->
+  <select id="getScreenShopsByevent" parameterType="java.util.HashMap" resultMap="BaseResultMap">
+  	SELECT
+		shops.*,
+		(0.8*shops.distance/1000+1.5/shops.order_number+0.5/shops.comment_mark) as defaultSort,
+		(0.5 * shops.order_number + 600/shops.browse_num + 100/shops.collect_num ) as popularity
+	FROM
+		(
+			SELECT
+				id,code,name,logo,city_id,address,status,is_new_shop,browse_num,collect_num,shop_label,first_class_name,second_class_name,district_name,business_area_name,
+				first_class_id,second_class_id,district_id,business_area_id,latitude,longitude,list_photo,is_event,order_number,comment_mark,created_at,ROUND(
+					6378.138 * 2 * ASIN(
+						SQRT(
+							POW(
+								SIN(
+									(
+										${latitude} * PI() / 180 - t.latitude * PI() / 180
+									) / 2
+								) ,
+								2
+							) + COS(${latitude} * PI() / 180) * COS(t.latitude * PI() / 180) * POW(
+								SIN(
+									(
+										${longitude} * PI() / 180 - t.longitude * PI() / 180
+									) / 2
+								) ,
+								2
+							)
+						)
+					) * 1000
+				) AS distance
+			FROM
+				t_shop_info_busin t
+		) AS shops ,
+		t_shop_event f
+	WHERE
+		shops.id = f.shop_id
+	AND shops.status = 1
+	AND shops.city_id = ${cityId}
+	AND f.status = 1
+	AND '${eventDate}' = f.event
+	<![CDATA[AND '${event}' < f.end_date]]> 
+	<if test="eventType != null and eventType != ''">
+		AND f.event_type = ${eventType}
+	</if>
+	<if test="firstClassId != null and firstClassId != ''">
+		AND shops.first_class_id = ${firstClassId}
+	</if>
+	<if test="secondClassId != null and secondClassId != ''">
+		AND shops.second_class_id = ${secondClassId}
+	</if>
+	<if test="districtId != null and districtId != ''">
+		AND shops.district_id = ${districtId}
+	</if>
+	<if test="businessAreaId != null and businessAreaId != ''">
+		AND shops.business_area_id = ${businessAreaId}
+	</if>
+	<if test="isNewShop != null and isNewShop != ''">
+		<!-- <![CDATA[AND to_days(now())-to_days(shops.created_at) < 30]]>  -->
+		AND shops.is_new_shop = ${isNewShop}
+	</if>
+	<if test="distance != null and distance != ''">
+	<![CDATA[AND shops.distance < ${distance}]]> 
+	</if>
+	<if test="shopId != null and shopId != ''">
+		AND shops.id != #{shopId}
+	</if>
+	<if test="sortType == 0 || sortType == null">
+		ORDER BY defaultSort
+	</if>
+	<if test="sortType == 1">
+		ORDER BY distance
+	</if>
+	<if test="sortType == 2">
+		ORDER BY popularity
+	</if>
+	<if test="sortType == 3">
+		ORDER BY shops.created_at
+	</if>
+	<if test="sortType == 4">
+		ORDER BY shops.comment_mark DESC
+	</if>
+	limit ${page},20
+  </select>
+  
+  <!-- 根据interviewId查询提到商户 -->
+  <select id="getInterviewChild" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+  	SELECT
+		id ,
+		CODE ,
+		NAME ,
+		logo ,
+		address,
+		list_photo,
+		shop_label ,
+		first_class_name ,
+		second_class_name ,
+		district_name ,
+		business_area_name 
+	FROM
+		t_shop_info_busin
+	WHERE
+		STATUS = 1
+	AND CODE IN(
+		SELECT
+			CODE
+		FROM
+			t_shop_interview_child
+		WHERE
+			STATUS = 1
+		AND interview_id = #{interviewId})
+  </select>
+  
+  <!-- 根据shopId查询商家信息 -->
+  <select id = "getShopsNameByShopId" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+  	select name,logo FROM t_shop_info_busin where id = #{shopId}
+  </select>
+  
+  <select id="getNewShopNum" parameterType="java.util.HashMap" resultType =  "java.lang.Integer">
+  	select count(1) from t_shop_info_busin where status = 1 and is_new_shop = 1 and  city_id = #{cityId} and first_class_id = #{firstClassId} 
+  </select>
+  
+  <!-- 附近的店 -->
+  <!-- <select id="getNearbyShops" resultMap="BaseResultMap">
+  	select *,
+		ROUND(
+	        6378.138 * 2 * ASIN(
+	            SQRT(
+	                POW(
+	                    SIN(
+	                        (
+	                            #{param1} * PI() / 180 - latitude * PI() / 180
+	                        ) / 2
+	                    ),
+	                    2
+	                ) + COS(#{param1} * PI() / 180) * COS(latitude * PI() / 180) * POW(
+	                    SIN(
+	                        (
+	                            #{param2} * PI() / 180 - longitude * PI() / 180
+	                        ) / 2
+	                    ),
+	                    2
+	                )
+	            )
+	        ) * 1000
+	    ) AS distance 
+	    from t_shop_info_busin
+	    where status = 1
+	    order by distance
+	    limit #{param3},20
+  </select> -->
+  <!-- 获取新店速递 -->
+  <!-- <select id="getNewShopsByCityId">
+  	select *,
+		ROUND(
+	        6378.138 * 2 * ASIN(
+	            SQRT(
+	                POW(
+	                    SIN(
+	                        (
+	                            ${latitude} * PI() / 180 - latitude * PI() / 180
+	                        ) / 2
+	                    ),
+	                    2
+	                ) + COS(${latitude} * PI() / 180) * COS(latitude * PI() / 180) * POW(
+	                    SIN(
+	                        (
+	                            ${longitude} * PI() / 180 - longitude * PI() / 180
+	                        ) / 2
+	                    ),
+	                    2
+	                )
+	            )
+	        ) * 1000
+	    ) AS distance 
+	    from t_shop_info_busin
+	    where status = 1
+	    order by distance
+	    limit ${page},20
+  </select> -->
+</mapper>
