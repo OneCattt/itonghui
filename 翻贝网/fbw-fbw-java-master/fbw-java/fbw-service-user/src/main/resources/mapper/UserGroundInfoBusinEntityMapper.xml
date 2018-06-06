@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.fbw.service.mappers.UserGroundInfoBusinEntityMapper">
+  <resultMap id="BaseResultMap" type="com.fbw.service.entity.user.UserGroundInfoBusinEntity">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="mobile" jdbcType="VARCHAR" property="mobile" />
+    <result column="shop_id" jdbcType="VARCHAR" property="shopId" />
+    <result column="shop_assistant_id" jdbcType="VARCHAR" property="shopAssistantId" />
+    <result column="salesman_id" jdbcType="VARCHAR" property="salesmanId" />
+    <result column="shop_ground_type" jdbcType="VARCHAR" property="shopGroundType" />
+    <result column="ground_type" jdbcType="VARCHAR" property="groundType" />
+    <result column="created_at" jdbcType="TIMESTAMP" property="createdAt" />
+    <result column="updated_at" jdbcType="TIMESTAMP" property="updatedAt" />
+  </resultMap>
+  <insert id="insertUserGround" parameterType="com.fbw.service.entity.user.UserGroundInfoBusinEntity">
+    <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Integer">
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into user.t_user_ground_info_busin
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="mobile != null">
+        mobile,
+      </if>
+      <if test="shopId != null">
+        shop_id,
+      </if>
+      <if test="shopAssistantId != null">
+        shop_assistant_id,
+      </if>
+      <if test="salesmanId != null">
+        salesman_id,
+      </if>
+      <if test="shopGroundType != null">
+        shop_ground_type,
+      </if>
+      <if test="groundType != null">
+        ground_type,
+      </if>
+       <if test="createdAt != null">
+        created_at,
+      </if>
+      <if test="updatedAt != null">
+        updated_at,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="mobile != null">
+        #{mobile,jdbcType=VARCHAR},
+      </if>
+      <if test="shopId != null">
+        #{shopId,jdbcType=VARCHAR},
+      </if>
+      <if test="shopAssistantId != null">
+        #{shopAssistantId,jdbcType=VARCHAR},
+      </if>
+      <if test="salesmanId != null">
+        #{salesmanId,jdbcType=VARCHAR},
+      </if>
+      <if test="shopGroundType != null">
+        #{shopGroundType,jdbcType=VARCHAR},
+      </if>
+      <if test="groundType != null">
+        #{groundType,jdbcType=VARCHAR},
+      </if>
+       <if test="createdAt != null">
+        #{createdAt,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updatedAt != null">
+        #{updatedAt,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  
+  
+  <update id="updateByPrimaryKeySelective" parameterType="com.fbw.service.entity.user.UserGroundInfoBusinEntity">
+    update t_user_ground_info_busin
+    <set>
+      <if test="mobile != null">
+        mobile = #{mobile,jdbcType=VARCHAR},
+      </if>
+      <if test="shopId != null">
+        shop_id = #{shopId,jdbcType=VARCHAR},
+      </if>
+      <if test="shopAssistantId != null">
+        shop_assistant_id = #{shopAssistantId,jdbcType=VARCHAR},
+      </if>
+      <if test="salesmanId != null">
+        salesman_id = #{salesmanId,jdbcType=VARCHAR},
+      </if>
+      <if test="shopGroundType != null">
+        shop_ground_type = #{shopGroundType,jdbcType=VARCHAR},
+      </if>
+      <if test="groundType != null">
+        ground_type = #{groundType,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <select id="queryUserGroundInfo"  parameterType="java.lang.String" resultMap="BaseResultMap">
+   select mobile,shop_id,shop_assistant_id,salesman_id,shop_ground_type,ground_type
+   from
+   t_user_ground_info_busin where mobile=#{param1}
+  </select>
+  <select id="selectIsGroundByMobile" parameterType="java.lang.String" resultType="java.lang.Integer">
+    select count(id) from t_user_ground_info_busin where mobile=#{param1}
+  </select>
+ 
+</mapper>

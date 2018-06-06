@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.fbw.service.mapper.GroundPersonPlanHistoryConfEntityMapper">
+  <resultMap id="BaseResultMap" type="com.fbw.service.entity.ground.GroundPersonPlanHistoryConfEntity">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="salesman_id" jdbcType="VARCHAR" property="salesmanId" />
+    <result column="ground_id" jdbcType="VARCHAR" property="groundId" />
+    <result column="balance_cycle_type" jdbcType="VARCHAR" property="balanceCycleType" />
+    <result column="balance_describe" jdbcType="VARCHAR" property="balanceDescribe" />
+    <result column="ground_balance_describe" jdbcType="VARCHAR" property="groundBalanceDescribe" />
+    <result column="ground_name" jdbcType="VARCHAR" property="groundName" />
+    <result column="valid_ground_describe" jdbcType="VARCHAR" property="validGroundDescribe" />
+    <result column="effect_date" jdbcType="TIMESTAMP" property="effectDate" />
+    <result column="invalid_date" jdbcType="TIMESTAMP" property="invalidDate" />
+    <result column="ground_fee" jdbcType="DECIMAL" property="groundFee" />
+    <result column="ground_scheme_type" jdbcType="VARCHAR" property="groundSchemeType" />
+  </resultMap>
+ 
+  <sql id="Base_Column_List">
+    id,  salesman_id, ground_id, balance_cycle_type, balance_describe, ground_balance_describe, 
+    ground_name, valid_ground_describe, effect_date, invalid_date, ground_fee, ground_scheme_type
+  </sql>
+  <insert id="saveGroundPersonPlan" parameterType="com.fbw.service.entity.ground.GroundPersonPlanHistoryConfEntity">
+    <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Integer">
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into t_ground_person_plan_history_conf
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="salesmanId != null">
+        salesman_id,
+      </if>
+      <if test="groundId != null">
+        ground_id,
+      </if>
+      <if test="balanceCycleType != null">
+        balance_cycle_type,
+      </if>
+      <if test="balanceDescribe != null">
+        balance_describe,
+      </if>
+      <if test="groundBalanceDescribe != null">
+        ground_balance_describe,
+      </if>
+      <if test="groundName != null">
+        ground_name,
+      </if>
+      <if test="validGroundDescribe != null">
+        valid_ground_describe,
+      </if>
+      <if test="invalidDate != null">
+        invalid_date,
+      </if>
+      <if test="groundFee != null">
+         ground_fee,
+      </if>
+      <if test="groundSchemeType != null">
+        ground_scheme_type,
+      </if>
+       effect_date
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+   
+      <if test="salesmanId != null">
+        #{salesmanId,jdbcType=VARCHAR},
+      </if>
+      <if test="groundId != null">
+        #{groundId,jdbcType=VARCHAR},
+      </if>
+      <if test="balanceCycleType != null">
+        #{balanceCycleType,jdbcType=VARCHAR},
+      </if>
+      <if test="balanceDescribe != null">
+        #{balanceDescribe,jdbcType=VARCHAR},
+      </if>
+      <if test="groundBalanceDescribe != null">
+        #{groundBalanceDescribe,jdbcType=VARCHAR},
+      </if>
+      <if test="groundName != null">
+        #{groundName,jdbcType=VARCHAR},
+      </if>
+      <if test="validGroundDescribe != null">
+        #{validGroundDescribe,jdbcType=VARCHAR},
+      </if>
+        
+      <if test="invalidDate != null">
+        #{invalidDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="groundFee != null">
+         #{groundFee,jdbcType=DECIMAL},
+      </if>
+      <if test="groundSchemeType != null">
+        #{groundSchemeType,jdbcType=VARCHAR},
+      </if>
+      now()
+    </trim>
+  </insert>
+  <select id="selectBySalesmanId" parameterType="java.lang.String" resultMap="BaseResultMap">
+   select 
+    <include refid="Base_Column_List" />
+    from t_ground_person_plan_history_conf
+    where salesman_id = #{param1}
+    order by effect_date desc
+  </select>
+  <select id="selectLatestBySalesmanId" parameterType="java.lang.String"  resultType="java.lang.String">
+   select 
+    ground_id
+    from t_ground_person_plan_history_conf
+    where salesman_id = #{param1}
+  </select>
+  <select id="queryGroundPersonPlanHistoryBySalesId" parameterType="java.lang.String"  resultMap="BaseResultMap">
+   select 
+    ground_id,ground_name
+    from t_ground_person_plan_history_conf
+    where salesman_id = #{param1} order by effect_date desc limit 1
+  </select>
+  <update id="updateLatestInvalidDate" parameterType="java.lang.Integer">
+    update t_ground_person_plan_history_conf set invalid_date = now() where id=#{id}
+  </update>
+  <update id="updateGroundFee" parameterType="java.util.HashMap">
+  update t_ground_person_plan_history_conf set ground_fee = #{groundFee} where id=#{id}
+  </update>
+  <select id="selectAllByGroundId" parameterType="java.util.HashMap" resultType="java.util.HashMap">
+	  SELECT history_ground_id historyGroundId,order_amount orderAmount,ground_order_activity_fee groundOrderActivityFee,ground_order_amount groundOrderAmount,user_number userNumber,recharge_number rechargeNumber,ground_fee groundFee FROM
+	(
+	SELECT a.history_ground_id,a.order_amount,a.ground_order_activity_fee,a.ground_order_amount,a.user_number,b.recharge_number FROM
+	(
+	SELECT
+	  history_ground_id,
+		sum(order_amount) order_amount,
+		sum(ground_order_activity_fee) ground_order_activity_fee,
+	  SUM(ground_order_amount) ground_order_amount,
+	  COUNT(id) user_number
+		FROM
+		t_ground_register_user_detail_busin
+		where salesman_id = #{salesmanId}
+	AND history_ground_id = #{historyGroundId}
+	)a
+	LEFT JOIN
+	(
+	SELECT
+	b.history_ground_id,
+	COUNT(b.id) recharge_number
+	FROM
+	t_ground_order_detail_busin b
+	WHERE b.group_salesman_id=#{salesmanId}
+	AND b.history_ground_id = #{historyGroundId}
+	AND b.ground_order_type='1'
+	)b
+	ON a.history_ground_id=b.history_ground_id
+	)c
+	LEFT JOIN
+	(
+	SELECT 
+	 id,ground_fee FROM
+	 t_ground_person_plan_history_conf
+	)d
+	ON c.history_ground_id=d.id
+  </select>
+</mapper>

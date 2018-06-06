@@ -1,0 +1,185 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.fbw.service.mapper.UserMapper">
+  <resultMap id="BaseResultMap" type="com.fbw.service.entity.user.UserOrderInfoBusinEntity">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="user_id" jdbcType="INTEGER" property="userId" />
+    <result column="user_mobile" jdbcType="VARCHAR" property="userMobile" />
+    <result column="shop_id" jdbcType="INTEGER" property="shopId" />
+    <result column="order_number" jdbcType="VARCHAR" property="orderNumber" />
+    <result column="order_amount" jdbcType="DECIMAL" property="orderAmount" />
+    <result column="shop_amount" jdbcType="DECIMAL" property="shopAmount" />
+    <result column="actual_amount" jdbcType="DECIMAL" property="actualAmount" />
+    <result column="red_envelope_amount" jdbcType="DECIMAL" property="redEnvelopeAmount" />
+    <result column="red_envelope_id" jdbcType="INTEGER" property="redEnvelopeId" />
+    <result column="comment_status" jdbcType="INTEGER" property="commentStatus" />
+    <result column="status" jdbcType="INTEGER" property="status" />
+    <result column="shop_user_id" jdbcType="INTEGER" property="shopuserId" />
+    <result column="account_status" jdbcType="INTEGER" property="accountStatus" />
+    <result column="account_time" jdbcType="TIMESTAMP" property="accountTime" />
+    <result column="account_amount" jdbcType="DECIMAL" property="accountAmount" />
+    <result column="refund_status" jdbcType="INTEGER" property="refundStatus" />
+    <result column="start_balance" jdbcType="DECIMAL" property="startBalance" />
+    <result column="last_balance" jdbcType="DECIMAL" property="lastBalance" />
+    <result column="city_id" jdbcType="INTEGER" property="cityId" />
+    <result column="maintainer_id" jdbcType="INTEGER" property="maintainerId" />
+    <result column="double_flower_status" jdbcType="INTEGER" property="doubleFlowerStatus" />
+    <result column="info" jdbcType="VARCHAR" property="info" />
+    <result column="created_at" jdbcType="TIMESTAMP" property="createdAt" />
+    <result column="updated_at" jdbcType="TIMESTAMP" property="updatedAt" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="address" jdbcType="VARCHAR" property="address" />
+  </resultMap>
+  <resultMap id="UserResultMap" type="com.fbw.service.entity.user.UserInfoBusinEntity">
+        <id column="id" jdbcType="INTEGER" property="userId" />
+    <result column="mobile" jdbcType="VARCHAR" property="mobile" />
+    <result column="user_name" jdbcType="VARCHAR" property="userName" />
+    <result column="nick_name" jdbcType="VARCHAR" property="nickName" />
+    <result column="avatar" jdbcType="VARCHAR" property="avatar" />
+    <result column="pay_password" jdbcType="VARCHAR" property="payPassword" />
+    <result column="open_id" jdbcType="VARCHAR" property="openId" />
+    <result column="identity_card" jdbcType="VARCHAR" property="identityCard" />
+    <result column="real_name" jdbcType="VARCHAR" property="realName" />
+    <result column="birthday" jdbcType="TIMESTAMP" property="birthday" />
+    <result column="sex" jdbcType="VARCHAR" property="sex" />
+    <result column="balance" jdbcType="DECIMAL" property="balance" />
+    <result column="save_money" jdbcType="DECIMAL" property="saveMoney" />
+    <result column="point" jdbcType="DECIMAL" property="point" />
+    <result column="city" jdbcType="VARCHAR" property="city" />
+    <result column="status" jdbcType="VARCHAR" property="status" />
+    <result column="first_recharge_time" jdbcType="TIMESTAMP" property="firstRechargeTime" />
+    <result column="first_order_time" jdbcType="TIMESTAMP" property="firstOrderTime" />
+    <result column="first_shop_name" jdbcType="VARCHAR" property="firstShopName" />
+    <result column="is_use_password" jdbcType="INTEGER" property="isUsePassword" />
+    <result column="created_at" jdbcType="TIMESTAMP" property="createdAt" />
+    <result column="updated_at" jdbcType="TIMESTAMP" property="updatedAt" />
+    <result column="red_packet_number" jdbcType="INTEGER" property="redPacketNumber" />
+    <result column="ground_flag" jdbcType="INTEGER" property="groundFlag" />
+    <result column="uncomm_number" jdbcType="INTEGER" property="uncommNumber" />
+  </resultMap>
+
+ <select id="selectSevenDayNocommentOrder" resultMap="BaseResultMap">
+  SELECT
+	user_id,
+	order_number,
+	shop_id
+  FROM
+	t_user_order_info_busin
+  WHERE
+	to_days(now()) - to_days(created_at) > 6
+  AND comment_status = 0
+  AND refund_status = 0
+  </select>
+  <select id="getUserOrderInfo" parameterType="java.lang.String" resultMap="BaseResultMap">
+   select 
+   shop_id,
+    (
+			SELECT
+				NAME
+			FROM
+				t_shop_info_busin b
+			WHERE
+				b.id = a.shop_id
+		) NAME,
+		(
+			SELECT
+				address
+			FROM
+				t_shop_info_busin b
+			WHERE
+				b.id = a.shop_id
+		) address,
+  double_flower_status,order_number,order_amount,actual_amount,red_envelope_amount,created_at 
+   <if test="param2==1">
+  ,updated_at
+  </if>
+   from t_user_order_info_busin a
+   where order_number=#{param1}
+  </select>
+  <insert id="insertUserComment" parameterType="com.fbw.service.entity.user.UserCommentBusinEntity">
+  insert into 
+  t_user_comment_busin
+  <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="userId != null">
+        user_id,
+      </if>
+      <if test="userAvatar != null">
+        user_avatar,
+      </if>
+      <if test="orderNumber != null">
+        order_number,
+      </if>
+      <if test="shopId != null">
+        shop_id,
+      </if>
+      <if test="content != null">
+        content,
+      </if>
+      <if test="nickName != null">
+        nick_name,
+      </if>
+      <if test="score != null">
+        score,
+      </if>
+      <if test="picture != null">
+        picture,
+      </if>
+      <if test="commentLabel != null">
+        comment_label,
+      </if>
+  </trim> 
+   <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="userId != null">
+        #{userId,jdbcType=VARCHAR},
+      </if>
+      <if test="userAvatar != null">
+        #{userAvatar,jdbcType=VARCHAR},
+      </if>
+      <if test="orderNumber != null">
+        #{orderNumber,jdbcType=VARCHAR},
+      </if>
+      <if test="shopId != null">
+        #{shopId,jdbcType=VARCHAR},
+      </if>
+      <if test="content != null">
+        #{content,jdbcType=VARCHAR},
+      </if>
+      <if test="nickName != null">
+        #{nickName,jdbcType=VARCHAR},
+      </if>
+       <if test="score != null">
+        #{score,jdbcType=VARCHAR},
+      </if>
+      <if test="picture != null">
+        #{picture,jdbcType=VARCHAR},
+      </if>
+      <if test="commentLabel != null">
+        #{commentLabel,jdbcType=VARCHAR},
+      </if>
+   </trim>   
+  </insert>
+  <update id="updateCommentStatus" parameterType="java.lang.String">
+  update 
+  t_user_order_info_busin 
+  set
+  comment_status='1' 
+  where order_number=#{orderNumber}
+  </update>
+    <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="UserResultMap">
+    select
+    (select count(id) from t_user_red_packet_busin where user_id=a.id) red_packet_number,
+    (select count(id) from t_user_ground_info_busin where mobile=a.mobile) ground_flag, 
+    (select count(id) from t_user_order_info_busin  where user_id=a.id and comment_status='0' and refund_status='0' ) uncomm_number,
+    id,nick_name,avatar,sex,identity_card,birthday,balance,point,mobile,is_use_password,real_name
+    from t_user_info_busin a
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <update id="autoRedPacketOutDate">
+   update
+   t_user_red_packet_busin
+   set
+   use_time=now(),
+   status=-1
+   where status=1 and curDate() > end_time
+  </update>
+  </mapper>

@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.fbw.service.mapper.ShopInfoErrorMapper">
+  <!-- 探店父类 -->
+  <resultMap id="interviewMap" type="com.fbw.service.entity.shop.ShopInfoErrorEntity">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="shop_id" jdbcType="INTEGER" property="shopId" />
+    <result column="user_id" jdbcType="INTEGER" property="userId" />
+    <result column="info_error" jdbcType="VARCHAR" property="infoError" />
+    <result column="status" jdbcType="INTEGER" property="status" />
+    <result column="created_at" jdbcType="TIMESTAMP" property="createdAt" />
+    <result column="updated_at" jdbcType="TIMESTAMP" property="updatedAt" />
+  </resultMap>
+  
+  <insert id="insertShopsInfoError" parameterType = "com.fbw.service.entity.shop.ShopInfoErrorEntity">
+  	INSERT INTO t_shop_info_error(shop_id,user_id , info_error , status)
+	VALUES(#{shopId,jdbcType=INTEGER},#{userId,jdbcType=INTEGER},#{infoError,jdbcType=VARCHAR},1)
+  </insert>
+  
+  
+</mapper>

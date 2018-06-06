@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.fbw.service.mapper.InterviewMapper">
+  <!-- 探店父类 -->
+  <resultMap id="interviewMap" type="com.fbw.service.entity.shop.InterviewParentEntity">
+    <id column="id" jdbcType="INTEGER" property="interviewId" />
+    <result column="city_id" jdbcType="VARCHAR" property="cityId" />
+    <result column="interview_title" jdbcType="VARCHAR" property="interviewTitle" />
+    <result column="interview_theme" jdbcType="VARCHAR" property="interviewTheme" />
+    <result column="publisher" jdbcType="VARCHAR" property="publisher" />
+    <result column="browse_num" jdbcType="INTEGER" property="browseNum" />
+    <result column="is_top" jdbcType="INTEGER" property="isTop" />
+    <result column="interview_content" jdbcType="VARCHAR" property="interviewContent" />
+    <result column="eff_date" jdbcType="TIMESTAMP" property="effDate" />
+    <result column="exp_date" jdbcType="TIMESTAMP" property="expDate" />
+    <result column="status" jdbcType="INTEGER" property="status" />
+    <result column="created_date" jdbcType="TIMESTAMP" property="createdDate" />
+    <result column="updated_date" jdbcType="TIMESTAMP" property="updatedDate" />
+  </resultMap>
+  
+  <!-- 探店子类 -->
+  <resultMap id="interviewChildMap" type="com.fbw.service.entity.shop.InterviewChildEntity">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="interview_id" jdbcType="INTEGER" property="interviewId" />
+    <result column="code" jdbcType="VARCHAR" property="code" />
+    <result column="status" jdbcType="INTEGER" property="status" />
+    <result column="created_date" jdbcType="TIMESTAMP" property="createdDate" />
+    <result column="updated_date" jdbcType="TIMESTAMP" property="updatedDate" />
+  </resultMap>
+  
+  <!-- 根据城市id查询探店 -->
+   <select id="getInterviewByCityId" parameterType="java.lang.Integer" resultMap="interviewMap">
+  	select id,interview_title,interview_theme,publisher,interview_content,browse_num
+  	from t_shop_interview_parent
+  	where
+  	city_id = #{param1}
+  	and status = 1
+  	and now() between eff_date and exp_date
+  	order by is_top desc, eff_date desc
+  	limit #{param2},20
+  </select>
+  
+  <!-- 根据code查询提到的探店（主） -->
+  <select id="getInterviewByCode" parameterType="java.lang.String" resultMap="interviewMap">
+  	SELECT
+  		f.id,
+		f.interview_title ,
+		f.interview_theme ,
+		f.publisher ,
+		f.interview_content,
+		f.browse_num
+	FROM
+		t_shop_interview_parent f
+	WHERE
+		f.id IN (
+			SELECT
+				interview_id
+			FROM
+				t_shop_interview_child t
+			WHERE
+				t. STATUS = 1
+			AND t.code = #{code}
+		)
+	ORDER BY
+		is_top DESC ,
+		eff_date DESC
+  </select>
+  
+  
+  
+  <!-- 根据interviewId查询探店 -->
+   <select id="getInterviewByInterviewId" parameterType="java.lang.Integer" resultMap="interviewMap">
+  	select id,interview_title,interview_theme,publisher,interview_content,browse_num
+  	from t_shop_interview_parent
+  	where
+  	id = #{interviewId}
+  	and status = 1
+  	and now() between eff_date and exp_date
+  	order by eff_date desc
+  </select>
+  
+</mapper>

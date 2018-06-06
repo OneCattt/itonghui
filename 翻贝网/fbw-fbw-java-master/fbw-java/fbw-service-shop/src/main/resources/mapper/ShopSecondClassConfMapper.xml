@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.fbw.service.mapper.ShopSecondClassConfMapper">
+  <resultMap id="BaseResultMap" type="com.fbw.service.entity.shop.ShopSecondClassConfEntity">
+    <result column="id" jdbcType="INTEGER" property="secondClassId" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="first_class_id" jdbcType="INTEGER" property="firstClassId" />
+    <result column="sort" jdbcType="INTEGER" property="sort" />
+    <result column="status" jdbcType="INTEGER" property="status" />
+    <result column="created_at" jdbcType="TIMESTAMP" property="createdAt" />
+    <result column="updated_at" jdbcType="TIMESTAMP" property="updatedAt" />
+  </resultMap>
+  <select id="getShopsSecondClass" parameterType = "java.lang.Integer" resultMap="BaseResultMap">
+  	SELECT
+		id ,
+		NAME ,
+		first_class_id 
+	FROM
+		t_shop_second_class_conf
+	WHERE
+		STATUS = 1
+	AND first_class_id = #{firstClassId}
+  </select>
+</mapper>

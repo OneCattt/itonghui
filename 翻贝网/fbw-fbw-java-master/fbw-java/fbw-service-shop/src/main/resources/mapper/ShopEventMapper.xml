@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.fbw.service.mapper.ShopEventMapper">
+  <resultMap id="ShopsEventMap" type="com.fbw.service.entity.shop.ShopEventEntity">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="shop_id" jdbcType="INTEGER" property="shopId" />
+    <result column="event" jdbcType="DATE" property="event" />
+    <result column="created_at" jdbcType="TIMESTAMP" property="createdAt" />
+    <result column="updated_at" jdbcType="TIMESTAMP" property="updatedAt" />
+    <result column="event_type" jdbcType="INTEGER" property="eventType" />
+    <result column="begin_date" jdbcType="TIMESTAMP" property="beginDate" />
+    <result column="end_date" jdbcType="TIMESTAMP" property="endDate" />
+  </resultMap>
+  <!-- 查询最近翻倍日 -->
+  <select id="getShopsEventsOne" parameterType="java.util.Map" resultMap="ShopsEventMap">
+  	select shop_id,event,event_type,begin_date,end_date
+  	from t_shop_event
+  	where shop_id=#{shopId}
+  	and status = 1
+  <choose>
+  	<when test="eventDate != null and eventDate != ''">
+  		and event='${eventDate}'
+  	</when>
+  	<otherwise>
+  		and event >= DATE_FORMAT(now(),"%Y-%m-%d") 
+  	</otherwise>
+  </choose>
+  	order by event
+  	limit 1
+  </select>
+  <!-- 根据月份查询翻倍日 -->
+  <select id="getShopsEventsByDate" parameterType="java.util.Map" resultMap="ShopsEventMap">
+  	select event,event_type,begin_date,end_date
+  	from t_shop_event
+	where shop_id = ${shopId}
+	<![CDATA[AND event >= '${date}']]>
+	and status = 1
+  </select>
+  
+  <select id="getShopsNowEventsByShopId" parameterType="java.lang.Integer" resultMap="ShopsEventMap">
+  	SELECT
+		EVENT ,
+		event_type ,
+		begin_date ,
+		end_date
+	FROM
+		t_shop_event
+	WHERE
+		shop_id = #{shopId}
+	AND status = 1
+	AND	TO_DAYS(now()) = TO_DAYS(EVENT)
+	AND now() BETWEEN begin_date
+	AND end_date
+  </select>
+  
+  <update id="updateShopEventStatus" parameterType = "com.fbw.service.entity.shop.ShopEventEntity">
+  	update t_shop_event
+  	set status = 0
+  	where shop_id = #{shopId}
+  	and event = #{event}
+  </update>
+</mapper>

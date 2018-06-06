@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.fbw.service.mapper.GroundOrderDetailBusinEntityMapper">
+  <resultMap id="BaseResultMap" type="com.fbw.service.entity.ground.GroundOrderDetailBusinEntity">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="city_id" jdbcType="VARCHAR" property="cityId" />
+    <result column="group_salesman_id" jdbcType="VARCHAR" property="groupSalesmanId" />
+    <result column="shop_assistant_id" jdbcType="VARCHAR" property="shopAssistantId" />
+    <result column="shop_id" jdbcType="VARCHAR" property="shopId" />
+    <result column="shop_name" jdbcType="VARCHAR" property="shopName" />
+    <result column="shop_code" jdbcType="VARCHAR" property="shopCode" />
+    <result column="register_mobile" jdbcType="VARCHAR" property="registerMobile" />
+    <result column="order_number" jdbcType="VARCHAR" property="orderNumber" />
+    <result column="ground_total_fee" jdbcType="DECIMAL" property="groundTotalFee" />
+    <result column="money" jdbcType="DECIMAL" property="money" />
+    <result column="ground_type" jdbcType="VARCHAR" property="groundType" />
+    <result column="ground_order_type" jdbcType="VARCHAR" property="groundOrderType" />
+    <result column="created_date" jdbcType="TIMESTAMP" property="createdDate" />
+    <result column="history_ground_id" jdbcType="VARCHAR" property="historyGroundId" />
+  </resultMap>
+  
+  <sql id="Base_Column_List">
+    id, city_id, group_salesman_id, shop_assistant_id, shop_id, shop_name, shop_code, register_mobile, 
+    order_number, ground_total_fee, money, ground_type, ground_order_type, created_date, history_ground_id
+  </sql>
+
+  <insert id="savaGroundOrderDetail" parameterType="com.fbw.service.entity.ground.GroundOrderDetailBusinEntity">
+    <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Integer">
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into t_ground_order_detail_busin
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="cityId != null">
+        city_id,
+      </if>
+      <if test="groupSalesmanId != null">
+        group_salesman_id,
+      </if>
+      <if test="shopAssistantId != null">
+        shop_assistant_id,
+      </if>
+      <if test="shopId != null">
+        shop_id,
+      </if>
+      <if test="shopName != null">
+        shop_name,
+      </if>
+      <if test="shopCode != null">
+        shop_code,
+      </if>
+      <if test="registerMobile != null">
+        register_mobile,
+      </if>
+      <if test="orderNumber != null">
+        order_number,
+      </if>
+      <if test="groundTotalFee != null">
+        ground_total_fee,
+      </if>
+      <if test="money != null">
+        money,
+      </if>
+      <if test="groundType != null">
+        ground_type,
+      </if>
+      <if test="groundOrderType != null">
+        ground_order_type,
+      </if>
+      <if test="createdDate != null">
+        created_date,
+      </if>
+       <if test="historyGroundId != null">
+        history_ground_id,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="cityId != null">
+        #{cityId,jdbcType=VARCHAR},
+      </if>
+      <if test="groupSalesmanId != null">
+        #{groupSalesmanId,jdbcType=VARCHAR},
+      </if>
+      <if test="shopAssistantId != null">
+        #{shopAssistantId,jdbcType=VARCHAR},
+      </if>
+      <if test="shopId != null">
+        #{shopId,jdbcType=VARCHAR},
+      </if>
+      <if test="shopName != null">
+        #{shopName,jdbcType=VARCHAR},
+      </if>
+      <if test="shopCode != null">
+        #{shopCode,jdbcType=VARCHAR},
+      </if>
+      <if test="registerMobile != null">
+        #{registerMobile,jdbcType=VARCHAR},
+      </if>
+      <if test="orderNumber != null">
+        #{orderNumber,jdbcType=VARCHAR},
+      </if>
+      <if test="groundTotalFee != null">
+        #{groundTotalFee,jdbcType=DECIMAL},
+      </if>
+      <if test="money != null">
+        #{money,jdbcType=DECIMAL},
+      </if>
+      <if test="groundType != null">
+        #{groundType,jdbcType=VARCHAR},
+      </if>
+      <if test="groundOrderType != null">
+        #{groundOrderType,jdbcType=VARCHAR},
+      </if>
+      <if test="createdDate != null">
+        #{createdDate,jdbcType=TIMESTAMP},
+      </if>
+       <if test="historyGroundId != null">
+       #{historyGroundId,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <select id="selectGroundOrder" parameterType="java.util.HashMap" resultMap="BaseResultMap">
+   select
+   <include refid="Base_Column_List" />
+   from t_ground_order_detail_busin where
+   ground_order_type='2'
+   and register_mobile=#{registerMobile}
+   limit #{begin},#{end}
+  </select>
+  <select id="selectGroundOrderBySalesmanId" parameterType="java.util.HashMap" resultMap="BaseResultMap">
+   select
+   <include refid="Base_Column_List" />
+   from t_ground_order_detail_busin where
+   ground_order_type='2'
+   and ground_type='1'
+   and group_salesman_id=#{salesmanId}
+   limit #{begin},#{end}
+  </select>
+  <select id="selectGroundRechargeBySalesmanId" parameterType="java.util.HashMap" resultMap="BaseResultMap">
+   select
+   <include refid="Base_Column_List" />
+   from t_ground_order_detail_busin where
+   ground_order_type='1'
+   and ground_type='1'
+   and group_salesman_id=#{salesmanId}
+   limit #{begin},#{end}
+  </select>
+  <update id="updateGroundOrderOrRecharge" parameterType="com.fbw.service.entity.ground.GroundOrderDetailBusinEntity">
+     UPDATE 
+	  t_ground_order_detail_busin 
+	  <set>
+	   <if test="orderNumber != null">
+	        order_number = #{orderNumber,jdbcType=INTEGER},
+	      </if>
+	      <if test="ground_total_fee != null">
+	        ground_total_fee = #{ground_total_fee,jdbcType=INTEGER},
+	      </if>
+	      <if test="money != null">
+	        money = #{money,jdbcType=INTEGER},
+	      </if>
+	      <if test="history_ground_id != null">
+	        history_ground_id = #{history_ground_id,jdbcType=INTEGER},
+	      </if>
+	      <if test="ground_type != null">
+	        ground_type = #{ground_type,jdbcType=INTEGER},
+	      </if>
+	      <if test="ground_order_type != null">
+	        ground_order_type = #{ground_order_type,jdbcType=INTEGER},
+	      </if>
+	  </set>
+	  register_mobile=#{mobile}
+  </update>
+</mapper>

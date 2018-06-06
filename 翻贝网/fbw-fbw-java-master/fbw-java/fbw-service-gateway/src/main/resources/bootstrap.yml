@@ -1,0 +1,22 @@
+spring:
+  application:
+    name: fbw-service-gateway
+  redis:
+    host: 101.201.83.28
+    password: 5fd216d874a7428b:FBWredisTEST123
+    port: 6379
+    database: 1
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://fbw:fbwtest123@172.16.40.20:8761/eureka/
+  instance:
+    prefer-ip-address: true
+security:
+  basic:
+    enabled: false
+zuul:
+  ignored-services: "*"
+  routes:
+    fbw-service-portal: /portal/**
+    

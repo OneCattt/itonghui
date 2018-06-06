@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.fbw.service.mapper.ShopDetailMapper">
+  <resultMap id="BaseResultMap" type="com.fbw.service.entity.shop.ShopDetailEntity">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="shop_id" jdbcType="INTEGER" property="shopId" />
+    <result column="max_sales" jdbcType="DECIMAL" property="maxSales" />
+    <result column="business_hours" jdbcType="VARCHAR" property="businessHours" />
+    <result column="buy_number" jdbcType="INTEGER" property="buyNumber" />
+    <result column="week_double_day" jdbcType="INTEGER" property="weekDoubleDay" />
+    <result column="photos" jdbcType="VARCHAR" property="photos" />
+    <result column="tips" jdbcType="VARCHAR" property="tips" />
+    <result column="content" jdbcType="VARCHAR" property="content" />
+    <result column="invoice" jdbcType="VARCHAR" property="invoice" />
+    <result column="not_partake_goods" jdbcType="VARCHAR" property="notPartakeGoods" />
+    <result column="description" jdbcType="VARCHAR" property="description" />
+    <result column="contact_number" jdbcType="VARCHAR" property="contactNumber" />
+    <result column="sms_phone" jdbcType="VARCHAR" property="smsPhone" />
+    <result column="last_event" jdbcType="DATE" property="lastEvent" />
+    <result column="qr_code" jdbcType="VARCHAR" property="qrCode" />
+    <result column="limited_type" jdbcType="INTEGER" property="limitedType" />
+    <result column="limited_amount" jdbcType="INTEGER" property="limitedAmount" />
+    <result column="limited_num" jdbcType="INTEGER" property="limitedNum" />
+    <result column="binding_time" jdbcType="TIMESTAMP" property="bindingTime" />
+    <result column="created_at" jdbcType="TIMESTAMP" property="createdAt" />
+    <result column="updated_at" jdbcType="TIMESTAMP" property="updatedAt" />
+  </resultMap>
+  
+  <select id="getShopsDetailByShopid"  parameterType = "java.lang.Integer" resultMap="BaseResultMap">
+  	select shop_id,max_sales,business_hours,limited_type,limited_amount,limited_num,buy_number,week_double_day,photos,tips,content,invoice,not_partake_goods,description,contact_number,sms_phone,last_event,qr_code
+  	 from t_shop_detail_busin
+  	where shop_id = #{shopId}
+  </select>
+  
+</mapper>

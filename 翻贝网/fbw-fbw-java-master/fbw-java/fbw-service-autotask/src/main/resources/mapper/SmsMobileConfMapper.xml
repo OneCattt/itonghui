@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.fbw.service.mapper.SmsMobileConfMapper">
+  <resultMap id="BaseResultMap" type="com.fbw.service.entity.common.SmsMobileConfMapperEntity">
+    <id column="id" jdbcType="INTEGER" property="Id" />
+    <result column="mobile" jdbcType="VARCHAR" property="mobile" />
+    <result column="type" jdbcType="INTEGER" property="type" />
+    <result column="status" jdbcType="INTEGER" property="status" />
+    <result column="created_at" jdbcType="TIMESTAMP" property="createdAt" />
+    <result column="updated_at" jdbcType="TIMESTAMP" property="updatedAt" />
+  </resultMap>
+  <select id = "getSmsMobilesByType" parameterType = "java.lang.Integer" resultType = "java.lang.String">
+  	select mobile from t_common_sms_mobile_conf where status = 1 and type = #{type}
+  </select>
+  
+</mapper>

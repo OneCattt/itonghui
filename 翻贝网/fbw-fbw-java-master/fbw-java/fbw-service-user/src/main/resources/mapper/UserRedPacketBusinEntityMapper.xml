@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.fbw.service.mappers.UserRedPacketBusinEntityMapper">
+  <resultMap id="BaseResultMap" type="com.fbw.service.entity.user.UserRedPacketBusinEntity">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="user_id" jdbcType="INTEGER" property="userId" />
+    <result column="amount" jdbcType="DECIMAL" property="amount" />
+    <result column="minimum_amount" jdbcType="DECIMAL" property="minimumAmount" />
+    <result column="shop_id" jdbcType="INTEGER" property="shopId" />
+    <result column="city_id" jdbcType="INTEGER" property="cityId" />
+    <result column="city_name" jdbcType="VARCHAR" property="cityName" />
+    <result column="start_time" jdbcType="DATE" property="startTime" />
+    <result column="end_time" jdbcType="DATE" property="endTime" />
+    <result column="use_time" jdbcType="TIMESTAMP" property="useTime" />
+    <result column="status" jdbcType="INTEGER" property="status" />
+    <result column="type" jdbcType="VARCHAR" property="type" />
+    <result column="hq_amount" jdbcType="DECIMAL" property="hqAmount" />
+    <result column="agent_amount" jdbcType="DECIMAL" property="agentAmount" />
+    <result column="first_class_id" jdbcType="INTEGER" property="firstClassId" />
+    <result column="second_class_id" jdbcType="INTEGER" property="secondClassId" />
+    <result column="first_class_name" jdbcType="VARCHAR" property="firstClassName" />
+    <result column="second_class_name" jdbcType="VARCHAR" property="secondClassName" />
+    <result column="position" jdbcType="VARCHAR" property="position" />
+    <result column="position_id" jdbcType="VARCHAR" property="positionId" />
+    <result column="evryday_use_time_start" jdbcType="VARCHAR" property="evrydayUseTimeStart" />
+    <result column="evryday_use_time_end" jdbcType="VARCHAR" property="evrydayUseTimeEnd" />
+    <result column="is_evryday_user_time" jdbcType="VARCHAR" property="isEvrydayUserTime" />
+    <result column="is_limit_use_day" jdbcType="VARCHAR" property="isLimitUseDay" />
+    <result column="created_at" jdbcType="TIMESTAMP" property="createdAt" />
+    <result column="updated_at" jdbcType="TIMESTAMP" property="updatedAt" />
+  </resultMap>
+  <select id="getRedPacketWithBig" parameterType="java.util.HashMap" resultMap="BaseResultMap">
+	SELECT
+	id,amount
+	FROM
+	(
+		SELECT
+			id,amount,city_id,`status`,user_id,start_time,end_time,minimum_amount
+		FROM
+			t_user_red_packet_busin t
+		WHERE
+			is_evryday_user_time = 0
+		UNION
+			SELECT
+				id,amount,city_id,`status`,user_id,start_time,end_time,minimum_amount
+			FROM
+				t_user_red_packet_busin t
+			WHERE
+				DATE_FORMAT(now(), "%H:%i:%s") BETWEEN evryday_use_time_start
+			AND evryday_use_time_end
+			AND is_evryday_user_time = 1
+	) t
+	WHERE
+		city_id IN (#{cityId}, 0)
+	AND STATUS = 1
+	AND user_id = #{userId}
+	AND NOW() BETWEEN start_time
+	AND end_time
+	AND #{minimumAmount} >= minimum_amount
+	ORDER BY
+		amount DESC,
+		end_time ASC
+	LIMIT 1
+  </select>
+  <update id="updateRedPacketStatus" parameterType="java.lang.Integer">
+  update 
+  t_user_red_packet_busin 
+  set status=0 ,use_time=now()
+  where id=#{id} and status=1
+  </update>
+  <select id="selectRedPacketListById" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+  select 
+  amount,
+  (SELECT city_name  from t_common_city_conf WHERE city_id=a.city_id) city_name,
+  end_time,
+  minimum_amount,
+  b.name first_class_name,
+  (select name from t_shop_second_class_conf where a.second_class_id =id)second_class_name,
+  is_limit_use_day,
+  evryday_use_time_start,
+  evryday_use_time_end
+  from 
+  t_user_red_packet_busin a,
+  t_shop_first_class_conf b
+  where a.first_class_id =b.id
+  AND a.status=1
+  and a.user_id=#{param1}
+  and NOW() BETWEEN a.start_time and a.end_time
+  order by a.created_at DESC
+  limit #{param2},20
+  </select>
+  <select id="selectUsedRedPacketListById" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+   SELECT
+	t.amount,t.city_name,t.end_time,t.use_time,t.first_class_name,t.second_class_name,t.status
+   FROM
+	(
+		SELECT
+			amount,
+			(SELECT city_name  from t_common_city_conf WHERE city_id=a.city_id) city_name,
+			end_time,
+            use_time,
+			(select name from t_shop_first_class_conf where a.first_class_id =id)first_class_name,
+			(select name from t_shop_second_class_conf where a.second_class_id =id)second_class_name,
+            '1' AS status
+		FROM
+			t_user_red_packet_busin a
+		WHERE
+			STATUS = 0
+		AND user_id = #{param1}
+		UNION ALL
+			SELECT
+				amount,
+				(SELECT city_name  from t_common_city_conf WHERE city_id=b.city_id) city_name,
+				end_time,
+                use_time,
+				(select name from t_shop_first_class_conf where b.first_class_id =id)first_class_name,
+			    (select name from t_shop_second_class_conf where b.second_class_id =id)second_class_name,
+                '2' AS status
+			FROM
+				t_user_red_packet_busin b
+			WHERE
+				STATUS = -1
+			AND user_id = #{param1}
+			UNION ALL
+			SELECT
+				amount,
+				(SELECT city_name  from t_common_city_conf WHERE city_id=c.city_id) city_name,
+				end_time,
+                use_time,
+				(select name from t_shop_first_class_conf where c.first_class_id =id)first_class_name,
+			    (select name from t_shop_second_class_conf where c.second_class_id =id)second_class_name,
+                '3' AS status
+			FROM
+				t_user_red_packet_busin c
+			WHERE
+				STATUS = -2
+			AND user_id = #{param1}
+	) t
+		order by t.use_time DESC
+   LIMIT #{param2},20
+  </select>
+ 
+</mapper>

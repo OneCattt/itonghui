@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.fbw.service.mapper.ShopClassBusinMapper">
+  <resultMap id="ShopsClassBannertMap" type="com.fbw.service.entity.shop.ShopClassBusinEntity">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="city_id" jdbcType="INTEGER" property="cityId" />
+    <result column="first_class_id" jdbcType="INTEGER" property="firstClassId" />
+    <result column="second_class_id" jdbcType="INTEGER" property="secondClassId" />
+    <result column="logo" jdbcType="VARCHAR" property="logo" />
+    <result column="sort" jdbcType="INTEGER" property="sort" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="status" jdbcType="INTEGER" property="status" />
+    <result column="created_at" jdbcType="TIMESTAMP" property="createdAt" />
+    <result column="updated_at" jdbcType="TIMESTAMP" property="updatedAt" />
+  </resultMap>
+  <select id="getShopsClass"  parameterType="java.lang.Integer" resultMap="ShopsClassBannertMap">
+  	SELECT
+		first_class_id ,
+		second_class_id ,
+		logo ,
+		name 
+	FROM
+		t_shop_class_busin
+	WHERE
+		city_id = #{cityId}
+	AND STATUS = 1
+	ORDER BY
+		sort
+  </select>
+  
+</mapper>

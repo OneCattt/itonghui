@@ -1,0 +1,58 @@
+spring:
+  application:
+    name: fbw-service-shop
+  jms:
+    pub-sub-domain: true
+  activemq:
+    broker-url: tcp://172.16.40.21:61616
+    packages:
+      trust-all: true
+#  activemq:
+#    broker-url: tcp://release.fbw-china.com:61616
+#    packages:
+#      trust-all: true
+  redis:
+    host: 172.16.40.21
+    password: fbwtest123
+    port: 6379
+#  redis:
+#    host: 101.201.83.28
+#    password: 5fd216d874a7428b:FBWredisTEST123
+#    port: 6379
+#    database: 1
+  datasource:
+    type: com.alibaba.druid.pool.DruidDataSource
+    driver-class-name: com.mysql.jdbc.Driver
+    url: jdbc:mysql://172.16.40.21:3306/fbw?characterEncoding=UTF-8&autoReconnect=true&zeroDateTimeBehavior=convertToNull&useUnicode=true&useSSL=false
+    username: root
+    password: root
+#    url: jdbc:mysql://101.201.83.28:3306/fbw3?characterEncoding=UTF-8&autoReconnect=true&zeroDateTimeBehavior=convertToNull&useUnicode=true&useSSL=false
+#    username: fbwwebtest
+#    password: Fbwtest2015!@#
+    filters: stat
+    maxActive: 20
+    initialSize: 1
+    maxWait: 60000
+    minIdle: 1
+    timeBetweenEvictionRunsMillis: 60000
+    minEvictableIdleTimeMillis: 300000
+    validationQueryTimeout: 900000
+    validationQuery: SELECT SYSDATE() from dual
+    testWhileIdle: true
+    testOnBorrow: false
+    testOnReturn: false
+    poolPreparedStatements: true
+    maxOpenPreparedStatements: 20 
+eureka:
+  client:
+    serviceUrl: 
+      defaultZone: http://fbw:fbwtest123@172.16.40.20:8761/eureka/
+#      defaultZone: http://fbw:fbwtest123@47.93.158.253:8761/eureka/
+  instance:
+    prefer-ip-address: true
+security:
+  basic:
+    enabled: false
+mybatis:
+  mapper-locations:
+  - mapper/*.xml

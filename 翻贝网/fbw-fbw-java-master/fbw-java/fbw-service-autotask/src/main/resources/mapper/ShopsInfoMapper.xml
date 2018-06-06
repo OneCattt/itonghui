@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.fbw.service.mapper.ShopsInfoMapper">
+  <resultMap id="BaseResultMap" type="com.fbw.service.entity.shop.ShopInfoEntity">
+    <id column="id" jdbcType="INTEGER" property="shopId" />
+    <result column="code" jdbcType="VARCHAR" property="code" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="logo" jdbcType="VARCHAR" property="logo" />
+    <result column="first_class_id" jdbcType="INTEGER" property="firstClassId" />
+    <result column="second_class_id" jdbcType="INTEGER" property="secondClassId" />
+    <result column="shop_label" jdbcType="VARCHAR" property="shopLabel" />
+    <result column="province_id" jdbcType="INTEGER" property="provinceId" />
+    <result column="city_id" jdbcType="INTEGER" property="cityId" />
+    <result column="district_id" jdbcType="INTEGER" property="districtId" />
+    <result column="business_area_id" jdbcType="INTEGER" property="businessAreaId" />
+    <result column="longitude" jdbcType="VARCHAR" property="longitude" />
+    <result column="latitude" jdbcType="VARCHAR" property="latitude" />
+    <result column="status" jdbcType="INTEGER" property="status" />
+    <result column="is_new_shop" jdbcType="INTEGER" property="isNewShop" />
+    <result column="browse_num" jdbcType="INTEGER" property="browseNum" />
+    <result column="collect_num" jdbcType="INTEGER" property="collectNum" />
+    <result column="grade" jdbcType="VARCHAR" property="grade" />
+    <result column="list_photo" jdbcType="VARCHAR" property="listPhoto" />
+    <result column="is_event" jdbcType="INTEGER" property="isEvent" />
+    <result column="next_event" jdbcType="DATE" property="nextEvent" />
+    <result column="first_class_name" jdbcType="VARCHAR" property="firstClassName" />
+    <result column="second_class_name" jdbcType="VARCHAR" property="secondClassName" />
+    <result column="city_name" jdbcType="VARCHAR" property="cityName" />
+    <result column="address" jdbcType="VARCHAR" property="address" />
+    <result column="district_name" jdbcType="VARCHAR" property="districtName" />
+    <result column="business_area_name" jdbcType="VARCHAR" property="businessAreaName" />
+    <result column="order_number" jdbcType="INTEGER" property="orderNumber" />
+    <result column="comment_number" jdbcType="INTEGER" property="commentNumber" />
+    <result column="comment_scores" jdbcType="DECIMAL" property="commentScores" />
+    <result column="comment_mark" jdbcType="DECIMAL" property="commentMark" />
+    <result column="maintainer_id" jdbcType="INTEGER" property="maintainerId" />
+    <result column="created_at" jdbcType="TIMESTAMP" property="createdAt" />
+    <result column="updated_at" jdbcType="TIMESTAMP" property="updatedAt" />
+    <result column="distance" jdbcType="TIMESTAMP" property="distance" />
+    <result column="defaultSort" jdbcType="DOUBLE" property="defaultSort" />
+    <result column="popularity" jdbcType="DOUBLE" property="popularity" />
+  </resultMap>
+  
+  <!-- 将所有商家的翻倍状态改为0（不是翻倍日） -->  
+  <update id = "updateShopsIsEventAll">
+  	update t_shop_info_busin
+  	set is_event = 0
+  	where status = 1
+  </update>
+  
+  <!-- 当日可翻倍花状态该为1 -->
+  <update id = "updateShopsIsEvent">
+  	update t_shop_info_busin
+	set is_event = 1
+	where status = 1
+	and id in 
+	(select shop_id from t_shop_event where EVENT = DATE_FORMAT(now() , "%Y-%m-%d"))
+  </update>
+  
+  <!-- 将所有商家的新店状态改为0（不是新店） --> 
+  <update id = "updateShopsIsNewAll">
+  	update t_shop_info_busin
+  	set is_new_shop = 0
+  	where status = 1
+  </update>
+  
+  <!-- 修改新店状态 --> 
+  <update id = "updateShopsIsNew">
+  	update t_shop_info_busin
+  	set is_new_shop = 1
+  	where status = 1
+  	and <![CDATA[to_days(now())-to_days(created_at) < 30]]>
+  </update>
+  
+  <!-- 更新商家收藏量 -->
+  <update id="updateShopsCollectByShopId"  parameterType = "java.lang.Integer">
+  	update t_shop_info_busin
+  	set collect_num = #{param2}
+  	where id = #{param1}
+  </update>
+  
+  <!-- 更新商家浏览量 -->
+  <update id="updateShopsBrowseByShopId" parameterType = "java.lang.Integer">
+  	update t_shop_info_busin
+  	set browse_num = #{param2}
+  	where id = #{param1}
+  </update>
+  
+  <!-- 查询商家浏览量 -->
+  <select id="getShopsBrowseNum" resultMap="BaseResultMap">
+  	select id,browse_num from t_shop_info_busin where status = 1
+  </select>
+  
+  <!-- 更新商家订单数量 -->
+  <update id="updateShopsOrderNum" parameterType="java.lang.Integer">
+  	update t_shop_info_busin
+  	set  order_number = #{param2}
+  	where id = #{param1}
+  </update>
+  
+  <!-- 更新商家评价信息（评价数量、评价平均分、评价总分） -->
+  <update id="updateShopsComment" parameterType = "com.fbw.service.entity.user.UserCommentBusinEntity">
+  	update t_shop_info_busin
+  	set  comment_number = #{commentNum},comment_scores = #{sumCommScore}, comment_mark = #{avgCommScore}
+  	where id = #{shopId}
+  </update>
+  
+  
+</mapper>

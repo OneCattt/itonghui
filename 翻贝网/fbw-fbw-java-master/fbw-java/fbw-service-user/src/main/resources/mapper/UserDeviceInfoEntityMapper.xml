@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.fbw.service.mappers.UserDeviceInfoEntityMapper">
+  <resultMap id="BaseResultMap" type="com.fbw.service.entity.user.UserDeviceInfoEntity">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="user_mobile" jdbcType="VARCHAR" property="userMobile" />
+    <result column="register_source" jdbcType="VARCHAR" property="registerSource" />
+    <result column="device_id" jdbcType="VARCHAR" property="deviceId" />
+    <result column="os_version" jdbcType="VARCHAR" property="osVersion" />
+    <result column="phone_type" jdbcType="VARCHAR" property="phoneType" />
+    <result column="ip" jdbcType="VARCHAR" property="ip" />
+    <result column="register_area" jdbcType="VARCHAR" property="registerArea" />
+    <result column="ios_or_android" jdbcType="VARCHAR" property="iosOrAndroid" />
+    <result column="created_at" jdbcType="TIMESTAMP" property="createdAt" />
+    <result column="updated_at" jdbcType="TIMESTAMP" property="updatedAt" />
+  </resultMap>
+
+  <sql id="Base_Column_List">
+    user_mobile, register_source, device_id, os_version, phone_type, ip, register_area, ios_or_android, 
+    created_at, updated_at
+  </sql>
+  
+  <select id="selectByPrimaryKey" parameterType="com.fbw.service.entity.user.UserDeviceInfoEntity" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from t_user_device_info
+    where user_mobile = #{userMobile,jdbcType=VARCHAR} and device_id = #{deviceId,jdbcType=VARCHAR}
+  </select>
+  <insert id="insertSelective" parameterType="com.fbw.service.entity.user.UserDeviceInfoEntity">
+    insert into t_user_device_info
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="registerSource != null">
+        register_source,
+      </if>
+       <if test="userMobile != null">
+        user_mobile,
+      </if>
+      <if test="deviceId != null">
+        device_id,
+      </if>
+      <if test="osVersion != null">
+        os_version,
+      </if>
+      <if test="phoneType != null">
+        phone_type,
+      </if>
+      <if test="ip != null">
+        ip,
+      </if>
+      <if test="registerArea != null">
+        register_area,
+      </if>
+      <if test="iosOrAndroid != null">
+        ios_or_android,
+      </if>
+      <if test="createdAt != null">
+        created_at,
+      </if>
+      <if test="updatedAt != null">
+        updated_at,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="registerSource != null">
+        #{registerSource,jdbcType=VARCHAR},
+      </if>
+      <if test="userMobile != null">
+        #{userMobile,jdbcType=VARCHAR},
+      </if>
+      <if test="deviceId != null">
+        #{deviceId,jdbcType=VARCHAR},
+      </if>
+      <if test="osVersion != null">
+        #{osVersion,jdbcType=VARCHAR},
+      </if>
+      <if test="phoneType != null">
+        #{phoneType,jdbcType=VARCHAR},
+      </if>
+      <if test="ip != null">
+        #{ip,jdbcType=VARCHAR},
+      </if>
+      <if test="registerArea != null">
+        #{registerArea,jdbcType=VARCHAR},
+      </if>
+      <if test="iosOrAndroid != null">
+        #{iosOrAndroid,jdbcType=VARCHAR},
+      </if>
+      <if test="createdAt != null">
+        #{createdAt,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updatedAt != null">
+        #{updatedAt,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  
+  <update id="updateByPrimaryKeySelective" parameterType="com.fbw.service.entity.user.UserDeviceInfoEntity">
+    update t_user_device_info
+    <set>
+      <if test="registerSource != null">
+        register_source = #{registerSource,jdbcType=VARCHAR},
+      </if>
+      <if test="deviceId != null">
+        device_id = #{deviceId,jdbcType=VARCHAR},
+      </if>
+      <if test="osVersion != null">
+        os_version = #{osVersion,jdbcType=VARCHAR},
+      </if>
+      <if test="phoneType != null">
+        phone_type = #{phoneType,jdbcType=VARCHAR},
+      </if>
+      <if test="ip != null">
+        ip = #{ip,jdbcType=VARCHAR},
+      </if>
+      <if test="registerArea != null">
+        register_area = #{registerArea,jdbcType=VARCHAR},
+      </if>
+      <if test="iosOrAndroid != null">
+        ios_or_android = #{iosOrAndroid,jdbcType=VARCHAR},
+      </if>
+      <if test="createdAt != null">
+        created_at = #{createdAt,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updatedAt != null">
+        updated_at = #{updatedAt,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where user_mobile = #{userMobile,jdbcType=VARCHAR}
+  </update>
+</mapper>

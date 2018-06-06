@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.fbw.service.mapper.UserCollectBusinEntityMapper">
+  <resultMap id="BaseResultMap" type="com.fbw.service.entity.user.UserCollectBusinEntity">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="user_id" jdbcType="INTEGER" property="userId" />
+    <result column="shop_id" jdbcType="INTEGER" property="shopId" />
+    <result column="status" jdbcType="INTEGER" property="status" />
+     <result column="interview_shop_id" jdbcType="INTEGER" property="interviewShopId" />
+    <result column="collect_type" jdbcType="INTEGER" property="collectType" />
+    <result column="collect_number" jdbcType="INTEGER" property="collectNumber" />
+    <result column="info" jdbcType="VARCHAR" property="info" />
+    <result column="created_at" jdbcType="TIMESTAMP" property="createdAt" />
+    <result column="updated_at" jdbcType="TIMESTAMP" property="updatedAt" />
+  </resultMap>
+   <resultMap id="UserCommentResultMap" type="com.fbw.service.entity.user.UserCommentBusinEntity">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="user_id" jdbcType="INTEGER" property="userId" />
+    <result column="nick_name" jdbcType="VARCHAR" property="nickName" />
+    <result column="user_avatar" jdbcType="VARCHAR" property="userAvatar" />
+    <result column="order_number" jdbcType="VARCHAR" property="orderNumber" />
+    <result column="shop_id" jdbcType="INTEGER" property="shopId" />
+    <result column="score" jdbcType="DECIMAL" property="score" />
+    <result column="content" jdbcType="VARCHAR" property="content" />
+    <result column="picture" jdbcType="VARCHAR" property="picture" />
+    <result column="comment_label" jdbcType="VARCHAR" property="commentLabel" />
+    <result column="reply_content" jdbcType="VARCHAR" property="replyContent" />
+    <result column="reply_time" jdbcType="TIMESTAMP" property="replyTime" />
+    <result column="report_status" jdbcType="INTEGER" property="reportStatus" />
+    <result column="report_content" jdbcType="VARCHAR" property="reportContent" />
+    <result column="report_time" jdbcType="TIMESTAMP" property="reportTime" />
+    <result column="is_del" jdbcType="INTEGER" property="isDel" />
+    <result column="admin_id" jdbcType="INTEGER" property="adminId" />
+    <result column="created_at" jdbcType="TIMESTAMP" property="createdAt" />
+    <result column="updated_at" jdbcType="TIMESTAMP" property="updatedAt" />
+    <result column="avg_comm_score" jdbcType="DECIMAL" property="avgCommScore" />
+    <result column="comment_num" jdbcType="INTEGER" property="commentNum" />
+     <result column="sum_comm_score" jdbcType="DECIMAL" property="sumCommScore" />
+  </resultMap>
+ <resultMap id="UserOrderResultMap" type="com.fbw.service.entity.user.UserOrderInfoBusinEntity">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="shop_id" jdbcType="INTEGER" property="shopId" />
+    <result column="every_shop_order" jdbcType="INTEGER" property="everyShopOrder" />
+  </resultMap>
+  <select id="getAllShopCollectNumber"  resultMap="BaseResultMap">
+	SELECT
+		shop_id,
+		COUNT(id) as collect_number
+	FROM
+		t_user_collect_busin
+	WHERE
+		collect_type = 1
+	GROUP BY
+		shop_id
+  </select>
+  <select id="getShopScoreAvgScoreCommentNum" resultMap="UserCommentResultMap">
+    select AVG(score) AS avg_comm_score,count(id) as comment_num,SUM(score) as sum_comm_score,shop_id
+     from t_user_comment_busin 
+     where is_del=0 
+     group by shop_id
+  </select>
+   <select id="getShopOrderNumber" parameterType="java.lang.Integer" resultMap="UserOrderResultMap">
+  select count(id) every_shop_order,shop_id
+  from t_user_order_info_busin
+  group by shop_id
+  </select>
+</mapper>

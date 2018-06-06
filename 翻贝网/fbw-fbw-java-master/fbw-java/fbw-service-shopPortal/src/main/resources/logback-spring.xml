@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+  <include resource="org/springframework/boot/logging/logback/defaults.xml" />
+  ​
+  <springProperty scope="context" name="springAppName" source="spring.application.name" />
+  <property name="SYS_LOG_DIR" value="/Users/wenhuarui/doc/logs" />  
+   <property name="LOG_FILE" value="portalDebug.log" /> ​
+  <property name="CONSOLE_LOG_PATTERN"
+    value="%clr(%d{yyyy-MM-dd HH:mm:ss.SSS}){faint} %clr(${LOG_LEVEL_PATTERN:-%5p}) %clr([${springAppName:-},%X{X-B3-TraceId:-},%X{X-B3-SpanId:-},%X{X-B3-ParentSpanId:-},%X{X-Span-Export:-}]){yellow} %clr(${PID:- }){magenta} %clr(---){faint} %clr([%15.15t]){faint} %clr(%-40.40logger{39}){cyan} %clr(:){faint} %m%n${LOG_EXCEPTION_CONVERSION_WORD:-%wEx}" />
+  <property name="fileLayoutPattern"  
+        value="%-20(%d{yyyyMMdd_HH:mm:ss.SSS} [%logger{10}][%thread] [%-4relative])  
+                [%X{hostName} %X{requestId} %X{processId} %X{service.timing} ][%level] %msg%n" /> 
+
+  <!-- Appender to log to console -->
+  <appender name="console" class="ch.qos.logback.core.ConsoleAppender">
+    <filter class="ch.qos.logback.classic.filter.LevelFilter">   
+      <level>INFO</level>   
+      <onMatch>ACCEPT</onMatch>   
+      <onMismatch>DENY</onMismatch>   
+    </filter>
+    <encoder>
+      <pattern>${CONSOLE_LOG_PATTERN}</pattern>
+      <charset>utf8</charset>
+    </encoder>
+  </appender>
+  
+   <appender name="LOG_ROLLING"  
+        class="ch.qos.logback.core.rolling.RollingFileAppender">  
+        <file>${SYS_LOG_DIR}/${LOG_FILE}</file>  
+         <filter class="ch.qos.logback.classic.filter.LevelFilter"> <!-- 日志过滤器，只记录warn级别日志 ,若要配置其他级别，复制appender，修改level，并在root中配置-->  
+            <level>ERROR</level>    
+            <onMatch>ACCEPT</onMatch>    
+            <onMismatch>DENY</onMismatch>    
+        </filter>    
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">  
+            <fileNamePattern>${SYS_LOG_DIR}/%d{yyyy-MM-dd}/${LOG_FILE}_%d{yyyy-MM-dd}_%i.zip</fileNamePattern>  
+            <timeBasedFileNamingAndTriggeringPolicy  
+                class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">  
+                <maxFileSize>50MB</maxFileSize>  
+            </timeBasedFileNamingAndTriggeringPolicy>  
+        </rollingPolicy>  
+        <layout>  
+            <pattern>${fileLayoutPattern}</pattern>  
+        </layout>  
+    </appender> 
+   
+  ​
+  <!-- Appender to log to file in a JSON format -->
+  <appender name="logstash" class="net.logstash.logback.appender.LogstashTcpSocketAppender">
+        <destination>192.168.2.22:9250</destination>
+        <!-- encoder is required -->
+        <encoder charset="UTF-8" class="net.logstash.logback.encoder.LogstashEncoder" />
+  </appender>
+  ​
+  <root level="DEBUG">
+    <appender-ref ref="console" />
+    <appender-ref ref="logstash" />
+    <appender-ref ref="LOG_ROLLING" /> <!-- 文件输出 -->  
+    <!--<appender-ref ref="flatfile"/> -->
+  </root>
+</configuration>

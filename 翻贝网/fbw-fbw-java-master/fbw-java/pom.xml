@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project
+	xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>com.fbw.serivce</groupId>
+	<artifactId>parent</artifactId>
+	<version>3.0.0-SNAPSHOT</version>
+	<packaging>pom</packaging>
+
+	<distributionManagement>
+		<repository>
+			<id>user-release</id>
+			<name>User Project Release</name>
+			<url>http://172.16.40.21:8081/nexus/content/repositories/releases/</url>
+		</repository>
+
+		<snapshotRepository>
+			<id>user-snapshots</id>
+			<name>User Project SNAPSHOTS</name>
+			<url>http://172.16.40.21:8081/nexus/content/repositories/snapshots/</url>
+		</snapshotRepository>
+	</distributionManagement>
+
+	<parent>
+		<groupId>org.springframework.boot</groupId>
+		<artifactId>spring-boot-starter-parent</artifactId>
+		<version>1.5.2.RELEASE</version>
+	</parent>
+
+	<dependencies>
+		<dependency>
+			<groupId>com.fbw.service</groupId>
+			<artifactId>fbw-service-entity</artifactId>
+			<version>3.0.0</version>
+		</dependency>
+		<dependency>
+			<groupId>alipay</groupId>
+			<artifactId>alipay-sdk-java</artifactId>
+			<version>20170511115337</version>
+		</dependency>
+		<dependency>
+			<groupId>alipay</groupId>
+			<artifactId>alipay-sdk-java-source</artifactId>
+			<version>20170511115337</version>
+		</dependency>
+		<dependency>
+			<groupId>net.sf.json-lib</groupId>
+			<artifactId>json-lib</artifactId>
+			<version>2.4</version>
+			<classifier>jdk15</classifier>
+		</dependency>
+		<dependency>
+			<groupId>fakepath</groupId>
+			<artifactId>fastjson</artifactId>
+			<version>1.2.28</version>
+		</dependency>
+		<dependency>
+			<groupId>fakepath</groupId>
+			<artifactId>commons-codec</artifactId>
+			<version>1.10</version>
+		</dependency>
+		<dependency>
+			<groupId>fakepath</groupId>
+			<artifactId>commons-logging</artifactId>
+			<version>1.2</version>
+		</dependency>
+		<dependency>
+			<groupId>fakepath</groupId>
+			<artifactId>commons.httpclient</artifactId>
+			<version>3.1.0</version>
+		</dependency>
+		<dependency>
+			<groupId>io.reactivex.rxjava2</groupId>
+			<artifactId>rxjava</artifactId>
+			<version>2.1.0</version>
+		</dependency>
+		<dependency>
+			<groupId>org.mybatis.spring.boot</groupId>
+			<artifactId>mybatis-spring-boot-starter</artifactId>
+			<version>1.1.1</version>
+		</dependency>
+		<dependency>
+			<groupId>net.logstash.logback</groupId>
+			<artifactId>logstash-logback-encoder</artifactId>
+			<version>4.6</version>
+		</dependency>
+		<dependency>
+			<groupId>taobao</groupId>
+			<artifactId>taobao-sdk-java-auto</artifactId>
+			<version>1.0</version>
+		</dependency>
+		<dependency>
+			<groupId>taobao</groupId>
+			<artifactId>taobao-sdk-java-auto-source</artifactId>
+			<version>1.0</version>
+		</dependency>
+		<dependency>
+			<groupId>sun</groupId>
+			<artifactId>BASE64Decoder</artifactId>
+			<version>1.0</version>
+		</dependency>
+		<dependency>
+			<groupId>com.fasterxml.jackson.core</groupId>
+			<artifactId>jackson-databind</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.alibaba</groupId>
+			<artifactId>druid</artifactId>
+			<version>1.0.29</version>
+		</dependency>
+	</dependencies>
+
+	<modules>
+		<module>fbw-service-config</module>
+		<module>fbw-service-eureka</module>
+		<module>fbw-service-zipkin</module>
+		<module>fbw-service-portal</module>
+		<module>fbw-service-common</module>
+		<module>fbw-service-recharge</module>
+		<module>fbw-service-gateway</module>
+		<module>fbw-service-ground</module>
+		<module>fbw-service-autotask</module>
+		<module>fbw-service-shop</module>
+		<module>fbw-service-shopPortal</module>
+		<module>fbw-service-user</module>
+		<module>fbw-service-entity</module>
+	</modules>
+
+	<build>
+		<plugins>
+			<!-- 添加docker-maven插件 -->
+			<plugin>
+				<groupId>com.spotify</groupId>
+				<artifactId>docker-maven-plugin</artifactId>
+				<version>0.4.13</version>
+				<configuration>
+					<imageName>itmuch/${project.artifactId}:${project.version}</imageName>
+					<baseImage>java</baseImage>
+					<entryPoint>["java", "-jar", "/${project.build.finalName}.jar"]</entryPoint>
+					<resources>
+						<resource>
+							<targetPath>/</targetPath>
+							<directory>${project.build.directory}</directory>
+							<include>${project.build.finalName}.jar</include>
+						</resource>
+					</resources>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+</project>

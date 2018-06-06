@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.fbw.service.mapper.ShopBannerMapper">
+  <resultMap id="ShopsBannerMap" type="com.fbw.service.entity.shop.ShopBannerEntity">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="url" jdbcType="VARCHAR" property="url" />
+    <result column="is_global" jdbcType="INTEGER" property="isGlobal" />
+    <result column="city_id" jdbcType="INTEGER" property="cityId" />
+    <result column="type" jdbcType="VARCHAR" property="type" />
+    <result column="location_type" jdbcType="INTEGER" property="locationType" />
+    <result column="first_class_id" jdbcType="INTEGER" property="firstClassId" />
+    <result column="content" jdbcType="VARCHAR" property="content" />
+    <result column="sort" jdbcType="INTEGER" property="sort" />
+    <result column="start_time" jdbcType="DATE" property="startTime" />
+    <result column="last_time" jdbcType="DATE" property="lastTime" />
+    <result column="is_login" jdbcType="INTEGER" property="isLogin" />
+    <result column="status" jdbcType="INTEGER" property="status" />
+    <result column="admin_id" jdbcType="INTEGER" property="adminId" />
+    <result column="created_at" jdbcType="TIMESTAMP" property="createdAt" />
+    <result column="updated_at" jdbcType="TIMESTAMP" property="updatedAt" />
+  </resultMap>
+  
+  <select id="getBannerByCityId" parameterType="java.lang.Integer" resultMap="ShopsBannerMap" >
+  	select name,url,type,content,is_login,first_class_id
+	from t_shop_banners
+	where status=1
+	and location_type=#{param2}
+	<if test="param2 == 1">
+		and city_id=#{param1} or (is_global=1 and location_type=#{param2})
+	</if>
+	<if test="param2 == 2">
+		and city_id=#{param1} 
+	</if>
+	<if test="param2 == 4">
+		and first_class_id = #{param3}
+	</if>
+	and now() BETWEEN start_time and last_time
+	order by sort
+  </select>
+  
+</mapper>

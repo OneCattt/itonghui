@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.fbw.service.mapper.ShopQualityMapper">
+  <resultMap id="ShopsQualityMap" type="com.fbw.service.entity.shop.ShopQualityEntity">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="city_id" jdbcType="INTEGER" property="cityId" />
+    <result column="shop_id" jdbcType="INTEGER" property="shopId" />
+    <result column="list_photo" jdbcType="VARCHAR" property="listPhoto" />
+    <result column="quality_comment" jdbcType="VARCHAR" property="qualityComment" />
+    <result column="status" jdbcType="INTEGER" property="status" />
+    <result column="created_at" jdbcType="TIMESTAMP" property="createdAt" />
+    <result column="updated_at" jdbcType="TIMESTAMP" property="updatedAt" />
+    <result column="sort" jdbcType="INTEGER" property="sort" />
+  </resultMap>
+  <select id="getShopsQualityByCityId" parameterType="java.lang.Integer" resultMap="ShopsQualityMap">
+  	select shop_id,list_photo,quality_comment
+  	from t_shop_quality_busin
+  	where status=1
+  	and city_id=#{cityId}
+  	order by sort
+  	limit 0,10
+  </select>
+  
+  <select id="getShopsQualityShopId" resultType = "java.lang.Integer">
+  	select shop_id
+  	from t_shop_quality_busin
+  	where status=1
+  </select>
+  
+  <select id="getShopsQualityAll" parameterType="java.lang.Integer" resultMap="ShopsQualityMap">
+  	select shop_id,list_photo,quality_comment
+  	from t_shop_quality_busin
+  	where status=1
+  	and city_id=#{param1}
+  	order by sort
+  	limit #{param2},20
+  </select> 
+</mapper>

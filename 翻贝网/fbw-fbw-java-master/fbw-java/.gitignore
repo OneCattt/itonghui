@@ -1,0 +1,11 @@
+*.project
+*.class
+*.jar
+*.prefs
+*.MF
+*.original
+.DS_Store
+*.classpath
+*.settings
+*.factorypath
+**/target

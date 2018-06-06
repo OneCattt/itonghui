@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.fbw.service.mapper.ShopSignMapper">
+  <resultMap id="BaseResultMap" type="com.fbw.service.entity.shop.ShopSignEntity">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="shop_id" jdbcType="INTEGER" property="shopId" />
+    <result column="sort" jdbcType="INTEGER" property="sort" />
+    <result column="sign_name" jdbcType="VARCHAR" property="signName" />
+    <result column="status" jdbcType="INTEGER" property="status" />
+    <result column="sign_photo_url" jdbcType="VARCHAR" property="signPhotoUrl" />
+    <result column="created_at" jdbcType="TIMESTAMP" property="createdAt" />
+    <result column="updated_at" jdbcType="TIMESTAMP" property="updatedAt" />
+  </resultMap>
+  
+  <!-- 根据shopid查询招牌特色 -->
+  <select id = "getShopsSignByShopId"  parameterType="java.lang.Integer" resultMap="BaseResultMap">
+  	SELECT
+		sign_name ,
+		sign_photo_url
+	FROM
+		t_shop_sign_busin
+	WHERE
+		status = 1
+	AND shop_id = #{shopId}
+	ORDER BY
+		sort
+  </select>
+</mapper>
