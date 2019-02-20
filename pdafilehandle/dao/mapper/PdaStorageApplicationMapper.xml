@@ -1,0 +1,202 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.itonghui.biz.pdafilehandle.dao.PdaStorageApplicationMapper">
+  <resultMap id="BaseResultMap" type="com.itonghui.biz.pdafilehandle.model.PdaFileHandleMo">
+    <result column="barcode" property="barcode" jdbcType="VARCHAR"/>
+    <result column="car_number" property="carNumber" jdbcType="VARCHAR"/>
+    <result column="code" property="code" jdbcType="VARCHAR"/>
+    <result column="pda_date" property="pdaDate" jdbcType="TIMESTAMP"/>
+    <result column="weight" property="weight" jdbcType="DECIMAL"/>
+    <result column="mass" property="mass" jdbcType="DECIMAL"/>
+    <result column="barn_number" property="barnNumber" jdbcType="VARCHAR"/>
+    <result column="pda_type" property="pdaType" jdbcType="INTEGER"/>
+    <result column="goods" property="goods" jdbcType="VARCHAR"/>
+    <result column="whether_deal" property="whetherDeal" jdbcType="INTEGER"/>
+    <result column="em_weight" property="emWeight" jdbcType="DECIMAL"/>
+    <result column="net_weight" property="netWeight" jdbcType="DECIMAL"/>
+    <result column="container_no" property="containerNo" jdbcType="VARCHAR"/>
+
+
+  </resultMap>
+  <sql id="Base_Column_List">
+    barcode, car_number,code, pda_date, weight, mass, barn_number,goods, pda_type,whether_deal,net_weight,em_weight,container_no
+  </sql>
+  <select id="selectCountByCode" resultType="int" parameterType="map">
+    select
+    count(1)
+    from pda_storage_application
+    where `code` = #{code,jdbcType=VARCHAR} and barcode = #{barcode,jdbcType=VARCHAR}
+    and whether_deal=0
+  </select>
+  <select id="selectOutCountByCode" resultType="int" parameterType="map">
+    select
+    count(1)
+    from pda_out_warehouse
+    where `code` = #{code,jdbcType=VARCHAR} and barcode = #{barcode,jdbcType=VARCHAR}
+    and whether_deal=0
+  </select>
+  <update id="updateByCode" parameterType="map">
+    update pda_storage_application
+    set whether_deal=1
+    where `code` = #{code,jdbcType=VARCHAR} and barcode = #{barcode,jdbcType=VARCHAR}
+  </update>
+  <update id="updateOutByCode" parameterType="map">
+    update pda_out_warehouse
+    set whether_deal=1
+    where `code` = #{code,jdbcType=VARCHAR} and barcode = #{barcode,jdbcType=VARCHAR}
+  </update>
+  <select id="selectByOutWarehouseNum" parameterType="map" resultMap="BaseResultMap" >
+    SELECT DATE_FORMAT( pda_date, "%Y-%m-%d" ) as pda_date FROM
+    pda_out_warehouse
+    WHERE barcode = #{params.outWarehouseNum,jdbcType=VARCHAR}
+    GROUP BY DATE_FORMAT( pda_date, "%Y-%m-%d" )
+    ORDER BY pda_date ASC
+  </select>
+  <select id="selectDetailByOutWarehouseNum" parameterType="map" resultMap="BaseResultMap" >
+    SELECT
+    <include refid="Base_Column_List" />
+    FROM
+      pda_out_warehouse
+    WHERE
+      barcode = #{barCode,jdbcType=VARCHAR}
+      AND
+      DATE_FORMAT(pda_date, "%Y-%m-%d") = DATE_FORMAT(#{pdaDate}, "%Y-%m-%d")
+      ORDER BY code desc, pda_type ASC
+  </select>
+  <select id="selectCountDetailByOutWarehouseNum" parameterType="map" resultType="double" >
+    SELECT
+    IFNULL(sum(net_weight),0)
+    FROM
+    pda_out_warehouse
+    WHERE
+    barcode = #{barCode,jdbcType=VARCHAR}
+    AND
+    DATE_FORMAT(pda_date, "%Y-%m-%d") = DATE_FORMAT(#{pdaDate}, "%Y-%m-%d")
+  </select>
+  <select id="selectByReceiptNumber" parameterType="map" resultMap="BaseResultMap" >
+    SELECT DATE_FORMAT( pda_date, "%Y-%m-%d" ) as pda_date FROM
+    pda_storage_application
+    WHERE barcode = #{params.receiptNumber,jdbcType=VARCHAR}
+    GROUP BY DATE_FORMAT( pda_date, "%Y-%m-%d" )
+    ORDER BY pda_date ASC
+  </select>
+  <select id="selectDetailByReceiptNumber" parameterType="map" resultMap="BaseResultMap" >
+    SELECT
+    <include refid="Base_Column_List" />
+    FROM
+    pda_storage_application
+    WHERE
+    barcode = #{barCode,jdbcType=VARCHAR}
+    AND
+    DATE_FORMAT(pda_date, "%Y-%m-%d") = DATE_FORMAT(#{pdaDate}, "%Y-%m-%d")
+    ORDER BY code desc, pda_type ASC
+  </select>
+  <select id="selectCountDetailByReceiptNumber" parameterType="map" resultType="double">
+    SELECT
+    IFNULL(sum(net_weight),0)
+    FROM
+    pda_storage_application
+    WHERE
+    barcode = #{barCode,jdbcType=VARCHAR}
+    AND
+    DATE_FORMAT(pda_date, "%Y-%m-%d") = DATE_FORMAT(#{pdaDate}, "%Y-%m-%d")
+  </select>
+  <insert id="insertDJRYBatches">
+    INSERT INTO pda_storage_application(barcode,code,car_number,pda_date,container_no,
+    pda_type)
+    VALUES
+    <foreach collection="list" item="item" index="index" separator=",">
+      (#{item.barcode},#{item.code},#{item.carNumber},#{item.pdaDate},#{item.containerNo},1)
+    </foreach>
+  </insert>
+  <insert id="insertDJGBBatches">
+    INSERT INTO pda_storage_application(barcode,code,car_number,pda_date,weight,barn_number,goods,
+    pda_type)
+    VALUES
+    <foreach collection="list" item="item" index="index" separator=",">
+      (#{item.barcode},#{item.code},#{item.carNumber},#{item.pdaDate},#{item.weight},#{item.barnNumber},#{item.goods},2)
+    </foreach>
+  </insert>
+  <insert id="insertDJXHBatches">
+    INSERT INTO pda_storage_application(barcode,code,car_number,pda_date,mass,
+    pda_type)
+    VALUES
+    <foreach collection="list" item="item" index="index" separator=",">
+      (#{item.barcode},#{item.code},#{item.carNumber},#{item.pdaDate},#{item.mass},3)
+    </foreach>
+  </insert>
+  <insert id="insertDJEBBatches">
+    INSERT INTO pda_storage_application(barcode,code,car_number,pda_date,em_weight,net_weight,
+    pda_type)
+    VALUES
+    <foreach collection="list" item="item" index="index" separator=",">
+      (#{item.barcode},#{item.code},#{item.carNumber},#{item.pdaDate},#{item.emWeight},#{item.netWeight},4)
+    </foreach>
+  </insert>
+
+  <insert id="insertDJCYBatches">
+    INSERT INTO pda_storage_application(barcode,code,car_number,pda_date,
+    pda_type)
+    VALUES
+    <foreach collection="list" item="item" index="index" separator=",">
+      (#{item.barcode},#{item.code},#{item.carNumber},#{item.pdaDate},5)
+    </foreach>
+  </insert>
+  <insert id="insertTHCYBatches">
+    INSERT INTO pda_out_warehouse(barcode,code,car_number,pda_date,
+    pda_type)
+    VALUES
+    <foreach collection="list" item="item" index="index" separator=",">
+      (#{item.barcode},#{item.code},#{item.carNumber},#{item.pdaDate},5)
+    </foreach>
+  </insert>
+  <insert id="insertTHEBBatches">
+    INSERT INTO pda_out_warehouse(barcode,code,car_number,pda_date,em_weight,
+    pda_type)
+    VALUES
+    <foreach collection="list" item="item" index="index" separator=",">
+      (#{item.barcode},#{item.code},#{item.carNumber},#{item.pdaDate},#{item.emWeight},2)
+    </foreach>
+  </insert>
+  <insert id="insertTHGBBatches">
+    INSERT INTO pda_out_warehouse(barcode,code,car_number,pda_date,weight,net_weight,barn_number,goods,
+    pda_type)
+    VALUES
+    <foreach collection="list" item="item" index="index" separator=",">
+      (#{item.barcode},#{item.code},#{item.carNumber},#{item.pdaDate},#{item.weight},#{item.netWeight},#{item.barnNumber},#{item.goods},4)
+    </foreach>
+  </insert>
+  <insert id="insertTHPGBatches">
+    INSERT INTO pda_out_warehouse(barcode,code,car_number,pda_date,mass,
+    pda_type)
+    VALUES
+    <foreach collection="list" item="item" index="index" separator=",">
+      (#{item.barcode},#{item.code},#{item.carNumber},#{item.pdaDate},#{item.mass},3)
+    </foreach>
+  </insert>
+  <insert id="insertTHRYBatches">
+    INSERT INTO pda_out_warehouse(barcode,code,car_number,pda_date,
+    pda_type)
+    VALUES
+    <foreach collection="list" item="item" index="index" separator=",">
+      (#{item.barcode},#{item.code},#{item.carNumber},#{item.pdaDate},1)
+    </foreach>
+  </insert>
+  <select id="selectWhetherHaveOutNumByBarCode" parameterType="map" resultType="int" >
+    SELECT
+    count(1)
+    FROM
+    out_warehouse
+    WHERE
+    out_warehouse_num = #{barCode,jdbcType=VARCHAR}
+  </select>
+  <select id="selectWhetherHaveIntNumByBarCode" parameterType="map" resultType="int" >
+    SELECT
+    count(1)
+    FROM
+    storage_application
+    WHERE
+    receipt_number = #{barCode,jdbcType=VARCHAR}
+  </select>
+</mapper>
